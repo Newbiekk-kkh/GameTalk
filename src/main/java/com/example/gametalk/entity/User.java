@@ -9,7 +9,7 @@ import lombok.Getter;
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -20,7 +20,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String username;
 
-    public User() {
+    protected User() {
 
     }
 
