@@ -8,12 +8,14 @@ import com.example.gametalk.entity.User;
 import com.example.gametalk.enums.FriendStatus;
 import com.example.gametalk.repository.FriendRepository;
 import com.example.gametalk.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.gametalk.enums.FriendStatus.DENIED;
 import static com.example.gametalk.enums.FriendStatus.PENDING;
 
 
@@ -23,6 +25,7 @@ public class FriendService {
     private final FriendRepository friendRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public String friendRequest(String email) {
         User sender = userRepository.findUserByIdOrElseThrow(getLoginUserId());
         User receiver = userRepository.findUserByEmailOrElseThrow(email);
@@ -61,5 +64,20 @@ public class FriendService {
     private Long getLoginUserId() {
         Long id = 1L;
         return id;
+    }
+
+    @Transactional
+    public String switchFriendStatus(Long loginUserId, FriendStatus status, String email) {
+        User loginUser = userRepository.findUserByIdOrElseThrow(loginUserId);
+        User sender = userRepository.findUserByEmailOrElseThrow(email);
+        Friend pendingFriendRequest = friendRepository.findBySenderAndReceiverAndStatus(sender, loginUser, FriendStatus.valueOf("PENDING"));
+
+        pendingFriendRequest.updateFriendStatus(status);
+
+        if (status == DENIED) {
+            return "친구요청이 거절되었습니다.";
+        } else {
+            return "친구요청이 승낙되었습니다.";
+        }
     }
 }
