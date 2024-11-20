@@ -1,4 +1,4 @@
-package com.example.gametalk.dto;
+package com.example.gametalk.dto.friends;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

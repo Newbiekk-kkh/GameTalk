@@ -1,8 +1,8 @@
 package com.example.gametalk.controller;
 
-import com.example.gametalk.dto.FriendRequestDto;
-import com.example.gametalk.dto.FriendStatusDto;
-import com.example.gametalk.dto.UpdateFriendStatusRequestDto;
+import com.example.gametalk.dto.friends.FriendRequestDto;
+import com.example.gametalk.dto.friends.FriendStatusDto;
+import com.example.gametalk.dto.friends.UpdateFriendStatusRequestDto;
 import com.example.gametalk.service.FriendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,30 +13,30 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users/{userId}/friends")
+@RequestMapping("/friends")
 public class FriendController {
     private final FriendService friendService;
 
     @PostMapping
-    public String friendRequest(@PathVariable("userId") Long loginUserId, @RequestBody FriendRequestDto dto) {
+    public String friendRequest(@RequestBody FriendRequestDto dto) {
         return friendService.friendRequest(dto.getEmail());
     }
 
     @GetMapping(params = "status=ACCEPTED")
-    public ResponseEntity<List<FriendStatusDto>> viewFriendList(@PathVariable("userId") Long loginUserId) {
-        List<FriendStatusDto> FriendList = friendService.viewFriendList(loginUserId);
+    public ResponseEntity<List<FriendStatusDto>> viewFriendList() {
+        List<FriendStatusDto> FriendList = friendService.viewFriendList();
         return new ResponseEntity<> (FriendList, HttpStatus.OK);
     }
 
     @GetMapping(params = "status=PENDING")
-    public ResponseEntity<List<FriendStatusDto>> viewFriendRequestList(@PathVariable("userId") Long loginUserId) {
-        List<FriendStatusDto> FriendRequestList = friendService.viewFriendRequestList(loginUserId);
+    public ResponseEntity<List<FriendStatusDto>> viewFriendRequestList() {
+        List<FriendStatusDto> FriendRequestList = friendService.viewFriendRequestList();
         return new ResponseEntity<>(FriendRequestList, HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}")
-    public String switchFriendStatus(@PathVariable("userId") Long loginUserId, @PathVariable("friendId") Long id, @RequestBody UpdateFriendStatusRequestDto dto) {
+    @PatchMapping
+    public String switchFriendStatus(@RequestBody UpdateFriendStatusRequestDto dto) {
 
-        return friendService.switchFriendStatus(loginUserId, dto.getStatus(), dto.getEmail());
+        return friendService.switchFriendStatus(dto.getStatus(), dto.getEmail());
     }
 }

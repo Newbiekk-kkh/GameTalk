@@ -1,4 +1,4 @@
-package com.example.gametalk.dto;
+package com.example.gametalk.dto.users;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -3,10 +3,11 @@ package com.example.gametalk.controller;
 
 import com.example.gametalk.dto.users.UserProfileResponseDto;
 import com.example.gametalk.dto.users.UserUpdateResponseDto;
+import com.example.gametalk.entity.User;
 import com.example.gametalk.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import com.example.gametalk.dto.UserRequestDto;
-import com.example.gametalk.dto.UserResponseDto;
+import com.example.gametalk.dto.users.UserRequestDto;
+import com.example.gametalk.dto.users.UserResponseDto;
 import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.exception.validation.ValidationException;
 import jakarta.servlet.http.HttpSession;

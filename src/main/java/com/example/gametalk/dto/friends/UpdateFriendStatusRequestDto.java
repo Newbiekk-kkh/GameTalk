@@ -1,4 +1,4 @@
-package com.example.gametalk.dto;
+package com.example.gametalk.dto.friends;
 
 import com.example.gametalk.enums.FriendStatus;
 import lombok.Getter;
