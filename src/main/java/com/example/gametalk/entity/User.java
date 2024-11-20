@@ -20,13 +20,17 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String username;
 
+    @Column(nullable = false)
+    private boolean isDeleted; //탈퇴 여부 (아이디 재사용 방지 & 필요 시 복구 가능)
+
     protected User() {
 
     }
 
-    public User(String email, String password, String username) {
+    public User(String email, String password, String username, boolean isDeleted) {
         this.email = email;
         this.password = password;
         this.username = username;
+        this.isDeleted = isDeleted;
     }
 }

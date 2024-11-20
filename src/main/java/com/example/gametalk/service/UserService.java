@@ -9,12 +9,11 @@ import com.example.gametalk.exception.validation.ValidationErrorCode;
 import com.example.gametalk.exception.validation.ValidationException;
 import com.example.gametalk.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Getter
 @Service
@@ -26,15 +25,26 @@ public class UserService {
 
     @Transactional
     public UserResponseDto signUp(String email, String password, String name) throws ValidationException {
-        //이메일 중복 체크
-        if (userRepository.existsByEmail(email)) {
+
+        Optional<User> findUser = userRepository.findByEmail(email);
+
+        if (findUser.isPresent()) {
+            User user = findUser.get();
+
+            //탈퇴여부 확인
+            if (user.isDeleted()) {
+                throw new ValidationException(ValidationErrorCode.EMAIL_BANNED);
+            }
+
+            //이메일 중복 확인
             throw new ValidationException(ValidationErrorCode.EMAIL_DUPLICATED);
         }
+
         //비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(password);
 
         //유저 생성 및 저장
-        User createdUser = new User(email, encodedPassword, name);
+        User createdUser = new User(email, encodedPassword, name, false);
         userRepository.save(createdUser);
 
         return new UserResponseDto(createdUser.getEmail(), createdUser.getUsername());
@@ -46,11 +56,28 @@ public class UserService {
                 new AuthenticationException(AuthenticationErrorCode.EMAIL_INCORRECT)
         );
 
-        //비밀번호 체크
-        if (!passwordEncoder.matches(password, findUser.getPassword())) {
-            throw new AuthenticationException(AuthenticationErrorCode.PASSWORD_INCORRECT);
-        }
+        checkPassword(password, findUser);
 
         return "로그인 완료";
     }
+
+
+//    public String deleteAccount(Long id, String password) throws AuthenticationException {
+//
+//        User findUser = userRepository.findById(id).orElseThrow(() -> new AuthenticationException(AuthenticationErrorCode.USER_DELETED));
+//
+//        checkPassword(password, findUser);
+//
+//        userRepository.delete(findUser);
+//
+//        return "회원탈퇴 완료";
+//    }
+
+    // 비밀번호 체크
+    private void checkPassword(String password, User findUser) throws AuthenticationException {
+        if (!passwordEncoder.matches(password, findUser.getPassword())) {
+            throw new AuthenticationException(AuthenticationErrorCode.PASSWORD_INCORRECT);
+        }
+    }
+
 }

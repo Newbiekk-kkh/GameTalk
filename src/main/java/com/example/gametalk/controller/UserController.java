@@ -11,9 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -33,7 +31,12 @@ public class UserController {
         return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
     }
 
-    // 회원탈퇴
+    // TODO : 회원탈퇴
+//    @DeleteMapping("/users/{id}")
+//    public ResponseEntity<String> deleteAccount(@PathVariable Long id, @RequestBody UserRequestDto dto) throws AuthenticationException{
+//        String successMessage = userService.deleteAccount(id, dto.getPassword());
+//        return new ResponseEntity<>(successMessage, HttpStatus.OK);
+//    }
 
     /**
      * @apiNote 로그인
@@ -51,9 +54,18 @@ public class UserController {
         return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
-    // 로그아웃
+    /**
+     * @apiNote 로그아웃
+     * @param request (HttpSession.getSession) 로그인 된 세션이 있는 지 체크
+     * @return "로그아웃 완료" 문자열 반환
+     */
     @PostMapping("/logout")
-    public ResponseEntity<String> logout() {
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        return ResponseEntity.ok("로그아웃 완료");
     }
 }
