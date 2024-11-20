@@ -31,12 +31,18 @@ public class UserController {
         return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
     }
 
-    // TODO : 회원탈퇴
-//    @DeleteMapping("/users/{id}")
-//    public ResponseEntity<String> deleteAccount(@PathVariable Long id, @RequestBody UserRequestDto dto) throws AuthenticationException{
-//        String successMessage = userService.deleteAccount(id, dto.getPassword());
-//        return new ResponseEntity<>(successMessage, HttpStatus.OK);
-//    }
+    /**
+     *
+     * @param  id (유저 아이디)
+     * @param dto (비밀번호)
+     * @return "회원탈퇴 완료" 문자열 반환 (HttpStatus.OK) / 비밀번호가 일치하지 않거나 이미 탈퇴한 회원인 경우 예외 발생
+     * @throws AuthenticationException
+     */
+    @PatchMapping("/users/{id}")
+    public ResponseEntity<String> deactivateAccount(@PathVariable Long id, @RequestBody UserRequestDto dto) throws AuthenticationException{
+        String successMessage = userService.deactivateAccount(id, dto.getPassword());
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
+    }
 
     /**
      * @apiNote 로그인

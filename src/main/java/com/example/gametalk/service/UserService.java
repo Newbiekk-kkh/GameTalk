@@ -32,7 +32,7 @@ public class UserService {
             User user = findUser.get();
 
             //탈퇴여부 확인
-            if (user.isDeleted()) {
+            if (!user.isActivated()) {
                 throw new ValidationException(ValidationErrorCode.EMAIL_BANNED);
             }
 
@@ -44,7 +44,7 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(password);
 
         //유저 생성 및 저장
-        User createdUser = new User(email, encodedPassword, name, false);
+        User createdUser = new User(email, encodedPassword, name, true);
         userRepository.save(createdUser);
 
         return new UserResponseDto(createdUser.getEmail(), createdUser.getUsername());
@@ -61,17 +61,19 @@ public class UserService {
         return "로그인 완료";
     }
 
+    @Transactional
+    public String deactivateAccount(Long id, String password) throws AuthenticationException {
 
-//    public String deleteAccount(Long id, String password) throws AuthenticationException {
-//
-//        User findUser = userRepository.findById(id).orElseThrow(() -> new AuthenticationException(AuthenticationErrorCode.USER_DELETED));
-//
-//        checkPassword(password, findUser);
-//
-//        userRepository.delete(findUser);
-//
-//        return "회원탈퇴 완료";
-//    }
+        User findUser = userRepository.findById(id).orElseThrow(() -> new AuthenticationException(AuthenticationErrorCode.USER_DEACTIVATED));
+
+        checkPassword(password, findUser);
+
+        findUser.patchActivateStatus(false);
+
+        userRepository.save(findUser);
+
+        return "회원탈퇴 완료";
+    }
 
     // 비밀번호 체크
     private void checkPassword(String password, User findUser) throws AuthenticationException {

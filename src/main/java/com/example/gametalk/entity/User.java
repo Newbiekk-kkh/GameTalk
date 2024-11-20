@@ -20,17 +20,24 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String username;
 
+    /**
+     * @apiNote 탈퇴 여부 (아이디 재사용 방지 & 필요 시 복구 가능)
+     */
     @Column(nullable = false)
-    private boolean isDeleted; //탈퇴 여부 (아이디 재사용 방지 & 필요 시 복구 가능)
+    private boolean isActivated;
 
     protected User() {
 
     }
 
-    public User(String email, String password, String username, boolean isDeleted) {
+    public User(String email, String password, String username, boolean isActivated) {
         this.email = email;
         this.password = password;
         this.username = username;
-        this.isDeleted = isDeleted;
+        this.isActivated = isActivated;
+    }
+
+    public void patchActivateStatus(boolean activateStatus) {
+        this.isActivated = activateStatus;
     }
 }
