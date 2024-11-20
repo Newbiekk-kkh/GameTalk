@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
-
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
