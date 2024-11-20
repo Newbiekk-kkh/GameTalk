@@ -1,11 +1,7 @@
 package com.example.gametalk.service;
 
-import com.example.gametalk.config.PasswordEncoder;
-import com.example.gametalk.dto.users.login.LoginRequestDto;
-import com.example.gametalk.dto.users.signup.SignupRequestDto;
-import com.example.gametalk.dto.users.user.UserDeleteRequestDto;
-import com.example.gametalk.dto.users.user.UserUpdateResponseDto;
-import com.example.gametalk.dto.users.user.UserProfileResponseDto;
+import com.example.gametalk.dto.users.UserUpdateResponseDto;
+import com.example.gametalk.dto.users.UserProfileResponseDto;
 import com.example.gametalk.entity.User;
 import com.example.gametalk.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,27 +15,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-
-    // 회원가입 기능
-    public void signUp(SignupRequestDto signupRequestDto) {
-        String encodedPassword = passwordEncoder.encode(signupRequestDto.getPassword());
-        User user = new User(signupRequestDto.getUsername(), signupRequestDto.getEmail(), encodedPassword);
-        userRepository.save(user);
-    }
-
-    // 로그인 기능
-    public Long login(LoginRequestDto loginRequestDto) {
-        // 아이디가 존재하는지 확인
-        User user = userRepository.findByEmailOrElseThrow(loginRequestDto.getEmail());
-
-        // 비밀번호가 일치하는지 확인
-        if (passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 잘못되었습니다.");
-        }
-        return user.getId();
-    }
 
     // 프로필 조회 기능
     public UserProfileResponseDto findUserById(Long userId) {
@@ -60,6 +36,7 @@ public class UserService {
                     findUser.setEmail((String) value);
                     break;
                 case "password":
+                    // todo 패스워드 암호화 기능 연동 필요
                     String encodedPassword = passwordEncoder.encode((String) value);
                     findUser.setPassword((String) value);
                     break;
@@ -69,21 +46,5 @@ public class UserService {
         });
         userRepository.save(findUser);
         return new UserUpdateResponseDto(findUser.getUsername(), findUser.getEmail());
-    }
-
-    // 회원탈퇴 기능
-    public void deleteUser(Long userId, UserDeleteRequestDto userDeleteRequestDto) {
-        // 사용자 확인
-        User findUser = userRepository.findByIdOrElseThrow(userId);
-
-        // 아이디가 존재하는지 확인
-        User user = userRepository.findByEmailOrElseThrow(userDeleteRequestDto.getEmail());
-
-        // 비밀번호가 일치하는지 확인
-        if (passwordEncoder.matches(userDeleteRequestDto.getPassword(), user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 잘못되었습니다.");
-        }
-
-        userRepository.delete(findUser);
     }
 }
