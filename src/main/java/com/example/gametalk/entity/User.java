@@ -1,9 +1,12 @@
 package com.example.gametalk.entity;
 
+import com.example.gametalk.dto.users.user.UserProfileResponseDto;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "user")
 public class User extends BaseEntity {
@@ -21,12 +24,19 @@ public class User extends BaseEntity {
     private String username;
 
     public User() {
+    }
+
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
 
     }
 
-    public User(String email, String password, String username) {
-        this.email = email;
-        this.password = password;
-        this.username = username;
+    public static UserProfileResponseDto toDto(User user) {
+        return new UserProfileResponseDto(
+                user.getUsername(),
+                user.getEmail()
+        );
     }
 }

@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### properties 제외 ###
-src/main/resources/application.properties
+src/main/resources/application.properties!/.gitignore

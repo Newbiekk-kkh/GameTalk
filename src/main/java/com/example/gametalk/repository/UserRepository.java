@@ -1,15 +1,23 @@
 package com.example.gametalk.repository;
 
-public class UserRepository {
+import com.example.gametalk.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    // UserId 존재 유무 확인
+    default User findByIdOrElseThrow(long id) {
+        return findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다"));
+    }
+
+    // Email 존재 유무 확인
+    Optional<User> findByEmail(String email);
+
+    default User findByEmailOrElseThrow(String email) {
+        return findByEmail(email).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 이메일입니다."));
+    }
 }
-// todo 회원가입 기능
-
-// todo 로그인 기능
-
-// todo  로그아웃 기능
-
-// todo 프로필 조회 기능
-
-// todo 프로필 수정 기능
-
-// todo 회원탈퇴 기능

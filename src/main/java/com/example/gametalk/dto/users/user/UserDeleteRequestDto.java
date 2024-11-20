@@ -1,16 +1,11 @@
-package com.example.gametalk.dto.users.signup;
-
+package com.example.gametalk.dto.users.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class SignupRequestDto {
-
-    @NotBlank
-    private final String username;
+public class UserDeleteRequestDto {
 
     @NotBlank
     @Email
@@ -19,8 +14,7 @@ public class SignupRequestDto {
     @NotBlank
     private final String password;
 
-    public SignupRequestDto(String username, String email, String password) {
-        this.username = username;
+    public UserDeleteRequestDto(String email, String password) {
         this.email = email;
         this.password = password;
     }
