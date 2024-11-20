@@ -15,11 +15,8 @@ import com.example.gametalk.exception.authentication.AuthenticationErrorCode;
 import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.exception.validation.ValidationErrorCode;
 import com.example.gametalk.exception.validation.ValidationException;
-import com.example.gametalk.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.Optional;
 
@@ -118,6 +115,7 @@ public class UserService {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 입력값입니다 " + key);
             }
         });
+
         userRepository.save(findUser);
         return new UserUpdateResponseDto(findUser.getUsername(), findUser.getEmail());
     }

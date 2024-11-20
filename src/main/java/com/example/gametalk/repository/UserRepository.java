@@ -22,7 +22,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     default User findByEmailOrElseThrow(String email) {
         return findByEmail(email).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 이메일입니다."));
     }
-    public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String email);
-    }
 }

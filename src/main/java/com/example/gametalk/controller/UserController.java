@@ -9,8 +9,6 @@ import com.example.gametalk.dto.UserRequestDto;
 import com.example.gametalk.dto.UserResponseDto;
 import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.exception.validation.ValidationException;
-import com.example.gametalk.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +18,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping
 @RequiredArgsConstructor
 public class UserController {
 
@@ -69,7 +65,7 @@ public class UserController {
      * @return "회원탈퇴 완료" 문자열 반환 (HttpStatus.OK) / 비밀번호가 일치하지 않거나 이미 탈퇴한 회원인 경우 예외 발생
      * @throws AuthenticationException
      */
-    @PatchMapping("/users/{id}")
+    @PatchMapping("/users/{id}/deactive")
     public ResponseEntity<String> deactivateAccount(@PathVariable Long id, @RequestBody UserRequestDto dto) throws AuthenticationException{
         String successMessage = userService.deactivateAccount(id, dto.getPassword());
         return new ResponseEntity<>(successMessage, HttpStatus.OK);
