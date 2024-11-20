@@ -2,6 +2,7 @@ package com.example.gametalk.controller;
 
 import com.example.gametalk.dto.FriendRequestDto;
 import com.example.gametalk.dto.FriendResponseDto;
+import com.example.gametalk.dto.FriendStatusDto;
 import com.example.gametalk.entity.Friend;
 import com.example.gametalk.service.FriendService;
 import lombok.Getter;
@@ -24,8 +25,14 @@ public class FriendController {
     }
 
     @GetMapping(params = "status=ACCEPTED")
-    public ResponseEntity<List<FriendResponseDto>> viewFriendList(@PathVariable("userId") Long loginUserId, FriendResponseDto dto) {
-        List<FriendResponseDto> friendResponseDtoList = friendService.viewFriendList();
-        return new ResponseEntity<> (friendResponseDtoList, HttpStatus.OK);
+    public ResponseEntity<List<FriendStatusDto>> viewFriendList(@PathVariable("userId") Long loginUserId) {
+        List<FriendStatusDto> FriendList = friendService.viewFriendList(loginUserId);
+        return new ResponseEntity<> (FriendList, HttpStatus.OK);
+    }
+
+    @GetMapping(params = "status=PENDING")
+    public ResponseEntity<List<FriendStatusDto>> viewFriendRequestList(@PathVariable("userId") Long loginUserId) {
+        List<FriendStatusDto> FriendRequestList = friendService.viewFriendRequestList(loginUserId);
+        return new ResponseEntity<>(FriendRequestList, HttpStatus.OK);
     }
 }
