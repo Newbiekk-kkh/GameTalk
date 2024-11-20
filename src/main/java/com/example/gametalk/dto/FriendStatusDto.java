@@ -1,19 +1,32 @@
 package com.example.gametalk.dto;
 
+import com.example.gametalk.entity.Friend;
 import com.example.gametalk.enums.FriendStatus;
 import lombok.Getter;
 
 @Getter
 public class FriendStatusDto {
-    private final FriendStatus status;
+    private String senderName;
+    private String senderEmail;
+    private String receiverName;
+    private String receiverEmail;
 
-    private final long receiverId;
+    public FriendStatusDto() {
+    }
 
-    private final long senderId;
+    public FriendStatusDto(String senderName, String senderEmail, String receiverName, String receiverEmail) {
+        this.senderName = senderName;
+        this.senderEmail = senderEmail;
+        this.receiverName = receiverName;
+        this.receiverEmail = receiverEmail;
+    }
 
-    public FriendStatusDto(FriendStatus status, long receiverId, long senderId) {
-        this.status = status;
-        this.receiverId = receiverId;
-        this.senderId = senderId;
+    public static FriendStatusDto toDto(Friend friend) {
+        return new FriendStatusDto(
+                friend.getSender().getUsername(),
+                friend.getSender().getEmail(),
+                friend.getReceiver().getUsername(),
+                friend.getReceiver().getEmail()
+        );
     }
 }

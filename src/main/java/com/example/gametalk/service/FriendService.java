@@ -33,11 +33,19 @@ public class FriendService {
         return "친구 요청 완료";
     }
 
-    public List<FriendResponseDto> viewFriendList() {
-        return friendRepository
-                .findAll()
+    public List<FriendStatusDto> viewFriendList(Long loginUserId) {
+        User loginUser = userRepository.findUserByIdOrElseThrow(loginUserId);
+
+        List<Friend> friendsAsSender = friendRepository.findBySenderAndStatus(loginUser, FriendStatus.valueOf("ACCEPTED"));
+        List<Friend> friendsAsReceiver = friendRepository.findByReceiverAndStatus(loginUser, FriendStatus.valueOf("ACCEPTED"));
+
+        List<Friend> acceptedFriendsList = new ArrayList<>();
+        acceptedFriendsList.addAll(friendsAsSender);
+        acceptedFriendsList.addAll(friendsAsReceiver);
+
+        return acceptedFriendsList
                 .stream()
-                .map(FriendResponseDto::toDto)
+                .map(FriendStatusDto::toDto)
                 .toList();
     }
 
