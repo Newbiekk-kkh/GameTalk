@@ -13,7 +13,7 @@ public class UserRequestDto {
     private final String email;
 
     @NotBlank
-    @Size(min = 8, message = "비밀번호는 최소 8자 이상 필요합니다.")
+    @Size(min = 8, max = 20, message = "비밀번호는 최소 8자 이상이며, 20자 까지 입력해주세요.")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$", message = "대문자, 소문자, 숫자, 특수문자를 각각 최소 1개 이상 포함해야 합니다.")
     private final String password;
 
