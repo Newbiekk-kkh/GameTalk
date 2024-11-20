@@ -1,7 +1,6 @@
-package com.example.gametalk.dto;
+package com.example.gametalk.dto.posts;
 
 import com.example.gametalk.entity.Post;
-import com.example.gametalk.entity.User;
 import com.example.gametalk.enums.Genre;
 import lombok.Getter;
 

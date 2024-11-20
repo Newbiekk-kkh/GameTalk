@@ -1,7 +1,7 @@
 package com.example.gametalk.service;
 
-import com.example.gametalk.dto.PostCreateResponseDto;
-import com.example.gametalk.dto.PostResponseDto;
+import com.example.gametalk.dto.posts.PostCreateResponseDto;
+import com.example.gametalk.dto.posts.PostResponseDto;
 import com.example.gametalk.entity.Post;
 import com.example.gametalk.entity.User;
 import com.example.gametalk.enums.Genre;

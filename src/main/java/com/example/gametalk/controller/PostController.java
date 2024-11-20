@@ -1,8 +1,8 @@
 package com.example.gametalk.controller;
 
-import com.example.gametalk.dto.PostCreateResponseDto;
-import com.example.gametalk.dto.PostRequestDto;
-import com.example.gametalk.dto.PostResponseDto;
+import com.example.gametalk.dto.posts.PostCreateResponseDto;
+import com.example.gametalk.dto.posts.PostRequestDto;
+import com.example.gametalk.dto.posts.PostResponseDto;
 import com.example.gametalk.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

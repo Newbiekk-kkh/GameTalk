@@ -1,8 +1,6 @@
 package com.example.gametalk.service;
 
-import com.example.gametalk.dto.FriendRequestDto;
-import com.example.gametalk.dto.FriendResponseDto;
-import com.example.gametalk.dto.FriendStatusDto;
+import com.example.gametalk.dto.friends.FriendStatusDto;
 import com.example.gametalk.entity.Friend;
 import com.example.gametalk.entity.User;
 import com.example.gametalk.enums.FriendStatus;
@@ -24,8 +22,8 @@ public class FriendService {
     private final UserRepository userRepository;
 
     public String friendRequest(String email) {
-        User sender = userRepository.findUserByIdOrElseThrow(getLoginUserId());
-        User receiver = userRepository.findUserByEmailOrElseThrow(email);
+        User sender = userRepository.findByIdOrElseThrow(getLoginUserId());
+        User receiver = userRepository.findByEmailOrElseThrow(email);
 
         Friend friend = new Friend(PENDING, sender, receiver);
 
@@ -34,7 +32,7 @@ public class FriendService {
     }
 
     public List<FriendStatusDto> viewFriendList(Long loginUserId) {
-        User loginUser = userRepository.findUserByIdOrElseThrow(loginUserId);
+        User loginUser = userRepository.findByIdOrElseThrow(loginUserId);
 
         List<Friend> friendsAsSender = friendRepository.findBySenderAndStatus(loginUser, FriendStatus.valueOf("ACCEPTED"));
         List<Friend> friendsAsReceiver = friendRepository.findByReceiverAndStatus(loginUser, FriendStatus.valueOf("ACCEPTED"));
@@ -50,7 +48,7 @@ public class FriendService {
     }
 
     public List<FriendStatusDto> viewFriendRequestList(Long loginUserId) {
-        User loginUser = userRepository.findUserByIdOrElseThrow(loginUserId);
+        User loginUser = userRepository.findByIdOrElseThrow(loginUserId);
         return friendRepository
                 .findByReceiverAndStatus(loginUser, FriendStatus.valueOf("PENDING"))
                 .stream()

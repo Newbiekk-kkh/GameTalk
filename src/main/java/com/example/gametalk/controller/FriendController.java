@@ -1,11 +1,8 @@
 package com.example.gametalk.controller;
 
-import com.example.gametalk.dto.FriendRequestDto;
-import com.example.gametalk.dto.FriendResponseDto;
-import com.example.gametalk.dto.FriendStatusDto;
-import com.example.gametalk.entity.Friend;
+import com.example.gametalk.dto.friends.FriendRequestDto;
+import com.example.gametalk.dto.friends.FriendStatusDto;
 import com.example.gametalk.service.FriendService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
