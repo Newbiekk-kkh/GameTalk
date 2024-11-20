@@ -19,14 +19,22 @@ public class FriendService {
     private final FriendRepository friendRepository;
     private final UserRepository userRepository;
 
-    public String friendRequest(FriendRequestDto dto) {
+    public String friendRequest(String email) {
         User sender = userRepository.findUserByIdOrElseThrow(getLoginUserId());
-        User receiver = userRepository.findUserByEmailOrElseThrow(dto.getEmail());
+        User receiver = userRepository.findUserByEmailOrElseThrow(email);
 
         Friend friend = new Friend(PENDING, sender, receiver);
 
         friendRepository.save(friend);
         return "친구 요청 완료";
+    }
+
+    public List<FriendResponseDto> viewFriendList() {
+        return friendRepository
+                .findAll()
+                .stream()
+                .map(FriendResponseDto::toDto)
+                .toList();
     }
 
     private Long getLoginUserId() {
