@@ -1,8 +1,6 @@
 package com.example.gametalk.dto.users.user;
 
-import com.example.gametalk.entity.User;
 import jakarta.validation.constraints.NotBlank;
-
 import lombok.Getter;
 
 @Getter

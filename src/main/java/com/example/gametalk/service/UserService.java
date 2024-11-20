@@ -4,13 +4,10 @@ import com.example.gametalk.config.PasswordEncoder;
 import com.example.gametalk.dto.users.login.LoginRequestDto;
 import com.example.gametalk.dto.users.signup.SignupRequestDto;
 import com.example.gametalk.dto.users.user.UserDeleteRequestDto;
-import com.example.gametalk.dto.users.user.UserUpdateRequestDto;
 import com.example.gametalk.dto.users.user.UserUpdateResponseDto;
 import com.example.gametalk.dto.users.user.UserProfileResponseDto;
 import com.example.gametalk.entity.User;
 import com.example.gametalk.repository.UserRepository;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -38,7 +35,7 @@ public class UserService {
         User user = userRepository.findByEmailOrElseThrow(loginRequestDto.getEmail());
 
         // 비밀번호가 일치하는지 확인
-        if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
+        if (passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 잘못되었습니다.");
         }
         return user.getId();
@@ -83,7 +80,7 @@ public class UserService {
         User user = userRepository.findByEmailOrElseThrow(userDeleteRequestDto.getEmail());
 
         // 비밀번호가 일치하는지 확인
-        if (!passwordEncoder.matches(userDeleteRequestDto.getPassword(), user.getPassword())) {
+        if (passwordEncoder.matches(userDeleteRequestDto.getPassword(), user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 잘못되었습니다.");
         }
 
