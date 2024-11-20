@@ -32,9 +32,19 @@ public class Post extends BaseEntity {
 
     }
 
-    public Post(Genre genre, String title, String content) {
-        this.genre = genre;
+    public Post(String title, Genre genre, String content) {
         this.title = title;
+        this.genre = genre;
+        this.content = content;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void updatePost(String title, Genre genre, String content) {
+        this.title = title;
+        this.genre = genre;
         this.content = content;
     }
 }
