@@ -1,7 +1,5 @@
 package com.example.gametalk.service;
 
-import com.example.gametalk.dto.users.UserUpdateResponseDto;
-import com.example.gametalk.dto.users.UserProfileResponseDto;
 import com.example.gametalk.entity.User;
 import com.example.gametalk.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import com.example.gametalk.config.PasswordEncoder;
 import com.example.gametalk.dto.UserResponseDto;
-import com.example.gametalk.entity.User;
 import com.example.gametalk.exception.authentication.AuthenticationErrorCode;
 import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.exception.validation.ValidationErrorCode;
@@ -89,13 +86,13 @@ public class UserService {
     }
 
     // 프로필 조회 기능
-    public UserProfileResponseDto findUserById(Long userId) {
+    public UserResponseDto findUserById(Long userId) {
         User user = userRepository.findByIdOrElseThrow(userId);
         return User.toDto(user);
     }
 
     // 프로필 수정 기능
-    public UserUpdateResponseDto updateUser(Long userId, Map<String, Object> updates) {
+    public UserResponseDto updateUser(Long userId, Map<String, Object> updates) {
         User findUser = userRepository.findByIdOrElseThrow(userId);
 
         updates.forEach((key, value) -> {
@@ -104,12 +101,21 @@ public class UserService {
                     findUser.setUsername((String) value);
                     break;
                 case "email":
-                    findUser.setEmail((String) value);
+                    String email = (String) value;
+                    if (!email.matches("^[\\w\\.-]+@[\\w\\.-]+\\.[a-zA-Z]{2,}$")) {
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "올바르지 않은 이메일 형식입니다.");
+                    }
+                    findUser.setEmail(email);
                     break;
                 case "password":
-                    // todo 패스워드 암호화 기능 연동 필요
-                    String encodedPassword = passwordEncoder.encode((String) value);
-                    findUser.setPassword((String) value);
+                    String password = (String) value;
+                    if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")) {
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                "비밀번호는 대문자, 소문자, 숫자, 특수문자를 각각 최소 1개 이상 포함해야 하며, 8~20자 사이여야 합니다.");
+                    }
+                    // 비밀번호 암호화
+                    String encodedPassword = passwordEncoder.encode(password);
+                    findUser.setPassword(encodedPassword);
                     break;
                 default:
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 입력값입니다 " + key);
@@ -117,6 +123,6 @@ public class UserService {
         });
 
         userRepository.save(findUser);
-        return new UserUpdateResponseDto(findUser.getUsername(), findUser.getEmail());
+        return new UserResponseDto(findUser.getUsername(), findUser.getEmail());
     }
 }

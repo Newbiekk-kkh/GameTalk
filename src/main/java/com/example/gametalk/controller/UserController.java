@@ -1,8 +1,6 @@
 package com.example.gametalk.controller;
 
 
-import com.example.gametalk.dto.users.UserProfileResponseDto;
-import com.example.gametalk.dto.users.UserUpdateResponseDto;
 import com.example.gametalk.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import com.example.gametalk.dto.UserRequestDto;
@@ -31,18 +29,19 @@ public class UserController {
 
     // 프로필 조회 기능
     @GetMapping("/users/{id}")
-    public ResponseEntity<UserProfileResponseDto> findUserById(@PathVariable Long id, HttpServletRequest request) {
-        UserProfileResponseDto userProfileResponseDto = userService.findUserById(id);
-        return new ResponseEntity<>(userProfileResponseDto, HttpStatus.OK);
+    public ResponseEntity<UserResponseDto > findUserById(@PathVariable Long id, HttpServletRequest request) {
+        UserResponseDto userResponseDto = userService.findUserById(id);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
     // 프로필 수정 기능
     @PatchMapping("/users/{id}")
-    public ResponseEntity<UserUpdateResponseDto> updateUser(
+    public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long id,
             @Valid
             @RequestBody Map<String, Object> updates,
             HttpServletRequest request) {
+        UserResponseDto userResponseDto = userService.updateUser(id, updates);
         return new ResponseEntity<>(userService.updateUser(id, updates), HttpStatus.OK);
     }
 

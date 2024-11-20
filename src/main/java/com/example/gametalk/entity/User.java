@@ -1,6 +1,6 @@
 package com.example.gametalk.entity;
 
-import com.example.gametalk.dto.users.UserProfileResponseDto;
+import com.example.gametalk.dto.UserResponseDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,8 +44,8 @@ public class User extends BaseEntity {
         this.isActivated = activateStatus;
     }
       
-    public static UserProfileResponseDto toDto(User user) {
-        return new UserProfileResponseDto(
+    public static UserResponseDto toDto(User user) {
+        return new UserResponseDto(
                 user.getUsername(),
                 user.getEmail()
         );
