@@ -12,16 +12,8 @@ import java.util.List;
 
 @Repository
 public interface FriendRepository extends JpaRepository <Friend, Long> {
-    List<Friend> findByStatus(FriendStatus status);
     List<Friend> findByReceiverAndStatus(User receiver, FriendStatus status);
     List<Friend> findBySenderAndStatus(User sender, FriendStatus status);
-
-    default Friend findByLoginUserIdOrElseThrow(Long id) {
-        return findById(id)
-                .orElseThrow(() ->
-                        new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
-                                "Does not exist id = " + id)
-                );
-    }
+    Friend findBySenderAndReceiverAndStatus(User sender, User receiver, FriendStatus status);
+    Friend findByReceiverAndSender(User receiver, User sender);
 }
