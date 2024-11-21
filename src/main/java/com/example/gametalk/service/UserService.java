@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import com.example.gametalk.config.PasswordEncoder;
-import com.example.gametalk.dto.UserResponseDto;
+import com.example.gametalk.dto.users.UserResponseDto;
 import com.example.gametalk.exception.authentication.AuthenticationErrorCode;
 import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.exception.validation.ValidationErrorCode;
@@ -86,13 +86,13 @@ public class UserService {
     }
 
     // 프로필 조회 기능
-    public UserResponseDto findUserById(Long userId) {
+    public UserResponseDto findUserById(Long userId) throws AuthenticationException {
         User user = userRepository.findByIdOrElseThrow(userId);
         return User.toDto(user);
     }
 
     // 프로필 수정 기능
-    public UserResponseDto updateUser(Long userId, Map<String, Object> updates) {
+    public UserResponseDto updateUser(Long userId, Map<String, Object> updates) throws AuthenticationException {
         User findUser = userRepository.findByIdOrElseThrow(userId);
 
         updates.forEach((key, value) -> {

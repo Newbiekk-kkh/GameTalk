@@ -1,6 +1,7 @@
 package com.example.gametalk.entity;
 
-import com.example.gametalk.dto.UserResponseDto;
+import com.example.gametalk.dto.users.UserResponseDto;
+import com.example.gametalk.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

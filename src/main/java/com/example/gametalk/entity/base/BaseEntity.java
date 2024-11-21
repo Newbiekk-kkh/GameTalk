@@ -1,4 +1,4 @@
-package com.example.gametalk.entity;
+package com.example.gametalk.entity.base;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

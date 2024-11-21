@@ -1,4 +1,4 @@
-package com.example.gametalk.dto;
+package com.example.gametalk.dto.posts;
 
 import com.example.gametalk.enums.Genre;
 import lombok.Getter;
