@@ -1,5 +1,6 @@
 package com.example.gametalk.controller;
 
+import com.example.gametalk.dto.users.UserUpdateRequestDto;
 import com.example.gametalk.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import com.example.gametalk.dto.users.UserRequestDto;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.web.bind.annotation.*;
 
 
@@ -38,10 +41,10 @@ public class UserController {
     public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long id,
             @Valid
-            @RequestBody Map<String, Object> updates,
-            HttpServletRequest request) throws AuthenticationException {
-        UserResponseDto userResponseDto = userService.updateUser(id, updates);
-        return new ResponseEntity<>(userService.updateUser(id, updates), HttpStatus.OK);
+            @RequestBody UserUpdateRequestDto dto,
+            HttpServletRequest request) throws AuthenticationException, ValidationException {
+        UserResponseDto userResponseDto = userService.updateUser(id, dto.getUsername(), dto.getEmail(), dto.getPassword(), dto.getNewPassword());
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
     /**

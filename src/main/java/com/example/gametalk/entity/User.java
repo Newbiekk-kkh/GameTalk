@@ -44,11 +44,17 @@ public class User extends BaseEntity {
     public void patchActivateStatus(boolean activateStatus) {
         this.isActivated = activateStatus;
     }
+
+    public void patchUserInfo(String name, String email, String password) {
+        this.username = name;
+        this.email = email;
+        this.password = password;
+    }
       
     public static UserResponseDto toDto(User user) {
         return new UserResponseDto(
-                user.getUsername(),
-                user.getEmail()
+                user.getEmail(),
+                user.getUsername()
         );
     }
 }

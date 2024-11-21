@@ -2,6 +2,7 @@ package com.example.gametalk.service;
 
 import com.example.gametalk.entity.User;
 import com.example.gametalk.repository.UserRepository;
+import com.example.gametalk.utils.SessionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import com.example.gametalk.exception.validation.ValidationErrorCode;
 import com.example.gametalk.exception.validation.ValidationException;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
+
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,6 +27,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SessionUtils sessionUtils;
 
     @Transactional
     public UserResponseDto signUp(String email, String password, String name) throws ValidationException {
@@ -78,13 +81,6 @@ public class UserService {
         return "회원탈퇴 완료";
     }
 
-    // 비밀번호 체크
-    private void checkPassword(String password, User findUser) throws AuthenticationException {
-        if (!passwordEncoder.matches(password, findUser.getPassword())) {
-            throw new AuthenticationException(AuthenticationErrorCode.PASSWORD_INCORRECT);
-        }
-    }
-
     // 프로필 조회 기능
     public UserResponseDto findUserById(Long userId) throws AuthenticationException {
         User user = userRepository.findByIdOrElseThrow(userId);
@@ -92,37 +88,37 @@ public class UserService {
     }
 
     // 프로필 수정 기능
-    public UserResponseDto updateUser(Long userId, Map<String, Object> updates) throws AuthenticationException {
-        User findUser = userRepository.findByIdOrElseThrow(userId);
+    public UserResponseDto updateUser(Long userId, String name, String email, String password, String newPassword) throws AuthenticationException, ValidationException {
+        //권환 확인
+        User loginUser = userRepository.findByEmailOrElseThrow(sessionUtils.checkAuthorize(findUserById(userId).getEmail()));
 
-        updates.forEach((key, value) -> {
-            switch (key) {
-                case "username":
-                    findUser.setUsername((String) value);
-                    break;
-                case "email":
-                    String email = (String) value;
-                    if (!email.matches("^[\\w\\.-]+@[\\w\\.-]+\\.[a-zA-Z]{2,}$")) {
-                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "올바르지 않은 이메일 형식입니다.");
-                    }
-                    findUser.setEmail(email);
-                    break;
-                case "password":
-                    String password = (String) value;
-                    if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")) {
-                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                                "비밀번호는 대문자, 소문자, 숫자, 특수문자를 각각 최소 1개 이상 포함해야 하며, 8~20자 사이여야 합니다.");
-                    }
-                    // 비밀번호 암호화
-                    String encodedPassword = passwordEncoder.encode(password);
-                    findUser.setPassword(encodedPassword);
-                    break;
-                default:
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 입력값입니다 " + key);
-            }
-        });
+        // 비빌번호 확인
+        checkPassword(password, loginUser);
 
-        userRepository.save(findUser);
-        return new UserResponseDto(findUser.getEmail(), findUser.getUsername());
+        // 새로운 비밀번호가 이전 비밀번호랑 동일하지 확인
+        if (password.equals(newPassword)) {
+            throw new ValidationException(ValidationErrorCode.PASSWORD_NOT_ALLOWED);
+        }
+
+        // 세션 새로고침
+        if (!loginUser.getEmail().equals(email)) {
+            loginUser.setEmail(email);
+            sessionUtils.reloadSession(email);
+        }
+
+        // 새로운 비밀번호 저장
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        loginUser.patchUserInfo(name, email, encodedPassword);
+
+        userRepository.save(loginUser);
+
+        return new UserResponseDto(loginUser.getEmail(), loginUser.getUsername());
+    }
+
+    // 비밀번호 체크
+    private void checkPassword(String password, User findUser) throws AuthenticationException {
+        if (!passwordEncoder.matches(password, findUser.getPassword())) {
+            throw new AuthenticationException(AuthenticationErrorCode.PASSWORD_INCORRECT);
+        }
     }
 }
