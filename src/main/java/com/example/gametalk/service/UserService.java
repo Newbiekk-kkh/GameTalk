@@ -123,6 +123,6 @@ public class UserService {
         });
 
         userRepository.save(findUser);
-        return new UserResponseDto(findUser.getUsername(), findUser.getEmail());
+        return new UserResponseDto(findUser.getEmail(), findUser.getUsername());
     }
 }
