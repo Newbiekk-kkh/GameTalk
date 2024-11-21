@@ -11,11 +11,12 @@ import com.example.gametalk.repository.UserRepository;
 import com.example.gametalk.utils.SessionUtils;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,8 +37,11 @@ public class PostService {
         return new PostCreateResponseDto(post.getTitle(), post.getGenre(), post.getContent(), post.getCreatedAt(), post.getModifiedAt());
     }
 
-    public List<PostResponseDto> findAll() {
-        return postRepository.findAll().stream().map(PostResponseDto::toDto).toList();
+
+    // 페이징 처리
+    public Page<PostResponseDto> findAll(Pageable pageable) {
+        return postRepository.findAll(pageable)
+                .map(PostResponseDto::toDto);
     }
 
     public void delete(Long id) {

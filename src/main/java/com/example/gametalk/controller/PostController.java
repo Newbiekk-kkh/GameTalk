@@ -6,6 +6,10 @@ import com.example.gametalk.dto.posts.PostResponseDto;
 import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,13 +37,19 @@ public class PostController {
 
     }
 
+    // 정렬, 페이지네이션
     @GetMapping
-    public ResponseEntity<List<PostResponseDto>> findAll() {
+    public ResponseEntity<Page<PostResponseDto>> findAll(
+            @RequestParam(defaultValue = "0") int page,      // 기본값: 첫 페이지 (0)
+            @RequestParam(defaultValue = "10") int size      // 기본값: 한 페이지에 10개
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
-        List<PostResponseDto> postResponseDtoList = postService.findAll();
+        Page<PostResponseDto> postResponseDtoPage = postService.findAll(pageable);
 
-        return new ResponseEntity<>(postResponseDtoList, HttpStatus.OK);
+        return ResponseEntity.ok(postResponseDtoPage);
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<PostResponseDto> findById(@PathVariable Long id) {
