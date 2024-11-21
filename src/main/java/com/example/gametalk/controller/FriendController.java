@@ -29,19 +29,19 @@ public class FriendController {
     }
 
     @GetMapping(params = "status=ACCEPTED")
-    public ResponseEntity<List<FriendStatusDto>> viewFriendList() {
+    public ResponseEntity<List<FriendStatusDto>> viewFriendList() throws AuthenticationException {
         List<FriendStatusDto> FriendList = friendService.viewFriendList();
         return new ResponseEntity<> (FriendList, HttpStatus.OK);
     }
 
     @GetMapping(params = "status=PENDING")
-    public ResponseEntity<List<FriendStatusDto>> viewFriendRequestList() {
+    public ResponseEntity<List<FriendStatusDto>> viewFriendRequestList() throws AuthenticationException {
         List<FriendStatusDto> FriendRequestList = friendService.viewFriendRequestList();
         return new ResponseEntity<>(FriendRequestList, HttpStatus.OK);
     }
 
     @PatchMapping
-    public String updateFriendStatus(@RequestBody UpdateFriendStatusRequestDto dto) {
+    public String updateFriendStatus(@RequestBody UpdateFriendStatusRequestDto dto) throws AuthenticationException {
 
         return friendService.updateFriendStatus(dto.getStatus(), dto.getEmail());
     }

@@ -1,8 +1,6 @@
 package com.example.gametalk.service;
 
 import com.example.gametalk.dto.friends.FriendStatusDto;
-import com.example.gametalk.dto.users.UserProfileResponseDto;
-import com.example.gametalk.dto.users.UserResponseDto;
 import com.example.gametalk.entity.Friend;
 import com.example.gametalk.entity.User;
 import com.example.gametalk.enums.FriendStatus;
@@ -10,18 +8,14 @@ import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.repository.FriendRepository;
 import com.example.gametalk.repository.UserRepository;
 import com.example.gametalk.utils.SessionUtils;
-import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.gametalk.enums.FriendStatus.DENIED;
 import static com.example.gametalk.enums.FriendStatus.PENDING;
 
 
@@ -50,7 +44,7 @@ public class FriendService {
     }
 
 
-    public List<FriendStatusDto> viewFriendList(Long loginUserId) throws AuthenticationException {
+    public List<FriendStatusDto> viewFriendList() throws AuthenticationException {
         User loginUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
 
 
@@ -77,7 +71,7 @@ public class FriendService {
     }
 
     @Transactional
-    public String updateFriendStatus(FriendStatus status, String email) {
+    public String updateFriendStatus(FriendStatus status, String email) throws AuthenticationException {
         User loginUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
         User sender = userRepository.findByEmailOrElseThrow(email);
         Friend pendingFriendRequest = friendRepository.findBySenderAndReceiverAndStatus(sender, loginUser, FriendStatus.valueOf("PENDING"));
