@@ -9,7 +9,6 @@ import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.repository.PostRepository;
 import com.example.gametalk.repository.UserRepository;
 import com.example.gametalk.utils.SessionUtils;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,6 +45,11 @@ public class PostService {
 
     public void delete(Long id) {
         Post findPost = postRepository.findByIdOrElseThrow(id);
+
+        //권한 확인
+        String userEmail = findPost.getUser().getEmail();
+        sessionUtils.checkAuthorization(userEmail);
+
         postRepository.delete(findPost);
     }
 
@@ -70,8 +74,13 @@ public class PostService {
         );
     }
 
-    public PostResponseDto update(Long id, String title, Genre genre, String content) {
+    public PostResponseDto update(Long id, String title, Genre genre, String content) throws AuthenticationException {
         Post findPost = postRepository.findByIdOrElseThrow(id);
+
+        //권한 확인
+        String userEmail = findPost.getUser().getEmail();
+        sessionUtils.checkAuthorization(userEmail);
+
         findPost.updatePost(title, genre, content);
         postRepository.save(findPost);
 

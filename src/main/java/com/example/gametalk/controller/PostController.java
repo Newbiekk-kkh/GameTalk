@@ -27,13 +27,13 @@ public class PostController {
     public ResponseEntity<PostCreateResponseDto> createPost(@RequestBody PostRequestDto requestDto) throws AuthenticationException {
 
         PostCreateResponseDto postCreateResponseDto =
-            postService.createPost(
-                    requestDto.getTitle(),
-                    requestDto.getGenre(),
-                    requestDto.getContent()
-            );
+                postService.createPost(
+                        requestDto.getTitle(),
+                        requestDto.getGenre(),
+                        requestDto.getContent()
+                );
 
-        return  new ResponseEntity<>(postCreateResponseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(postCreateResponseDto, HttpStatus.CREATED);
 
     }
 
@@ -60,11 +60,10 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostResponseDto> update(@PathVariable Long id, @RequestBody PostRequestDto dto) {
+    public ResponseEntity<PostResponseDto> update(@PathVariable Long id, @RequestBody PostRequestDto dto) throws AuthenticationException {
         PostResponseDto updatedPost = postService.update(id, dto.getTitle(), dto.getGenre(), dto.getContent());
         return new ResponseEntity<>(updatedPost, HttpStatus.OK);
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {

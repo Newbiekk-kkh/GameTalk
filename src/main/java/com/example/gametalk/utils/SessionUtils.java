@@ -21,7 +21,7 @@ public class SessionUtils {
         return email;
     }
 
-    public String checkAuthorize(String email) {
+    public String checkAuthorization(String email) {
         String loginEmail = getLoginUserEmail();
         if (!email.equals(loginEmail)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "권한이 없습니다.");

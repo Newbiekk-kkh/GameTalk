@@ -4,9 +4,7 @@ import com.example.gametalk.entity.User;
 import com.example.gametalk.repository.UserRepository;
 import com.example.gametalk.utils.SessionUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import com.example.gametalk.config.PasswordEncoder;
 import com.example.gametalk.dto.users.UserResponseDto;
 import com.example.gametalk.exception.authentication.AuthenticationErrorCode;
@@ -16,7 +14,6 @@ import com.example.gametalk.exception.validation.ValidationException;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 
-import java.util.Map;
 import java.util.Optional;
 
 
@@ -90,7 +87,7 @@ public class UserService {
     // 프로필 수정 기능
     public UserResponseDto updateUser(Long userId, String name, String email, String password, String newPassword) throws AuthenticationException, ValidationException {
         //권환 확인
-        User loginUser = userRepository.findByEmailOrElseThrow(sessionUtils.checkAuthorize(findUserById(userId).getEmail()));
+        User loginUser = userRepository.findByEmailOrElseThrow(sessionUtils.checkAuthorization(findUserById(userId).getEmail()));
 
         // 비빌번호 확인
         checkPassword(password, loginUser);
