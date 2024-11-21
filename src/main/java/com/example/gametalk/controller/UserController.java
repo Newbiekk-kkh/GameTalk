@@ -3,6 +3,7 @@ package com.example.gametalk.controller;
 
 import com.example.gametalk.dto.users.UserProfileResponseDto;
 import com.example.gametalk.dto.users.UserUpdateResponseDto;
+import com.example.gametalk.entity.User;
 import com.example.gametalk.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import com.example.gametalk.dto.users.UserRequestDto;

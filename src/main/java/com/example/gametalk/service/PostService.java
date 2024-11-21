@@ -8,6 +8,8 @@ import com.example.gametalk.enums.Genre;
 import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.repository.PostRepository;
 import com.example.gametalk.repository.UserRepository;
+import com.example.gametalk.utils.SessionUtils;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,10 +24,11 @@ public class PostService {
 
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final SessionUtils sessionUtils;
 
-    public PostCreateResponseDto createPost(String username, String title, Genre genre, String content) throws AuthenticationException {
-
-        User findUser = userRepository.findUserByUsernameOrElseThrow(username);
+  
+    public PostCreateResponseDto createPost(String title, Genre genre, String content) throws AuthenticationException {
+        User findUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
         Post post = new Post(title, genre, content);
         post.setUser(findUser);
         postRepository.save(post);
@@ -47,12 +50,13 @@ public class PostService {
 
         // NPE 방지
         if (optionalPost.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ID가 존재하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post가 존재하지 않습니다.");
         }
 
         Post findPost = optionalPost.get();
 
         return new PostResponseDto(
+                findPost.getId(),
                 findPost.getUser().getUsername(),
                 findPost.getTitle(),
                 findPost.getGenre(),
@@ -68,6 +72,7 @@ public class PostService {
         postRepository.save(findPost);
 
         return new PostResponseDto(
+                findPost.getId(),
                 findPost.getUser().getUsername(),
                 findPost.getTitle(),
                 findPost.getGenre(),

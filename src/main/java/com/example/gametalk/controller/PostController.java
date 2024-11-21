@@ -23,14 +23,14 @@ public class PostController {
     public ResponseEntity<PostCreateResponseDto> createPost(@RequestBody PostRequestDto requestDto) throws AuthenticationException {
 
         PostCreateResponseDto postCreateResponseDto =
-                postService.createPost(
-                        requestDto.getUsername(),
-                        requestDto.getTitle(),
-                        requestDto.getGenre(),
-                        requestDto.getContent()
-                );
+            postService.createPost(
+                    requestDto.getTitle(),
+                    requestDto.getGenre(),
+                    requestDto.getContent()
+            );
 
-        return new ResponseEntity<>(postCreateResponseDto, HttpStatus.CREATED);
+        return  new ResponseEntity<>(postCreateResponseDto, HttpStatus.CREATED);
+
     }
 
     @GetMapping
