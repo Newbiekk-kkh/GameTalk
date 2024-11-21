@@ -3,6 +3,7 @@ package com.example.gametalk.controller;
 import com.example.gametalk.dto.posts.PostCreateResponseDto;
 import com.example.gametalk.dto.posts.PostRequestDto;
 import com.example.gametalk.dto.posts.PostResponseDto;
+import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,21 +20,21 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<PostCreateResponseDto> createPost(@RequestBody PostRequestDto requestDto) {
+    public ResponseEntity<PostCreateResponseDto> createPost(@RequestBody PostRequestDto requestDto) throws AuthenticationException {
 
         PostCreateResponseDto postCreateResponseDto =
-            postService.createPost(
-                    requestDto.getUsername(),
-                    requestDto.getTitle(),
-                    requestDto.getGenre(),
-                    requestDto.getContent()
-            );
+                postService.createPost(
+                        requestDto.getUsername(),
+                        requestDto.getTitle(),
+                        requestDto.getGenre(),
+                        requestDto.getContent()
+                );
 
-        return  new ResponseEntity<>(postCreateResponseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(postCreateResponseDto, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<PostResponseDto>> findAll(){
+    public ResponseEntity<List<PostResponseDto>> findAll() {
 
         List<PostResponseDto> postResponseDtoList = postService.findAll();
 

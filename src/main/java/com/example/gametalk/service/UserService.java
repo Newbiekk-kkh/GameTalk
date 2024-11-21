@@ -16,6 +16,7 @@ import com.example.gametalk.exception.validation.ValidationErrorCode;
 import com.example.gametalk.exception.validation.ValidationException;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
+
 import java.util.Map;
 import java.util.Optional;
 
@@ -88,13 +89,13 @@ public class UserService {
     }
 
     // 프로필 조회 기능
-    public UserProfileResponseDto findUserById(Long userId) {
+    public UserProfileResponseDto findUserById(Long userId) throws AuthenticationException {
         User user = userRepository.findByIdOrElseThrow(userId);
         return User.toDto(user);
     }
 
     // 프로필 수정 기능
-    public UserUpdateResponseDto updateUser(Long userId, Map<String, Object> updates) {
+    public UserUpdateResponseDto updateUser(Long userId, Map<String, Object> updates) throws AuthenticationException {
         User findUser = userRepository.findByIdOrElseThrow(userId);
 
         updates.forEach((key, value) -> {

@@ -4,6 +4,7 @@ import com.example.gametalk.dto.friends.FriendStatusDto;
 import com.example.gametalk.entity.Friend;
 import com.example.gametalk.entity.User;
 import com.example.gametalk.enums.FriendStatus;
+import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.repository.FriendRepository;
 import com.example.gametalk.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class FriendService {
     private final FriendRepository friendRepository;
     private final UserRepository userRepository;
 
-    public String friendRequest(String email) {
+    public String friendRequest(String email) throws AuthenticationException {
         User sender = userRepository.findByIdOrElseThrow(getLoginUserId());
         User receiver = userRepository.findByEmailOrElseThrow(email);
 
@@ -31,7 +32,7 @@ public class FriendService {
         return "친구 요청 완료";
     }
 
-    public List<FriendStatusDto> viewFriendList(Long loginUserId) {
+    public List<FriendStatusDto> viewFriendList(Long loginUserId) throws AuthenticationException {
         User loginUser = userRepository.findByIdOrElseThrow(loginUserId);
 
         List<Friend> friendsAsSender = friendRepository.findBySenderAndStatus(loginUser, FriendStatus.valueOf("ACCEPTED"));
@@ -47,7 +48,7 @@ public class FriendService {
                 .toList();
     }
 
-    public List<FriendStatusDto> viewFriendRequestList(Long loginUserId) {
+    public List<FriendStatusDto> viewFriendRequestList(Long loginUserId) throws AuthenticationException {
         User loginUser = userRepository.findByIdOrElseThrow(loginUserId);
         return friendRepository
                 .findByReceiverAndStatus(loginUser, FriendStatus.valueOf("PENDING"))
