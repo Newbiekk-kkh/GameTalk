@@ -4,7 +4,9 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.PatternMatchUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
@@ -23,7 +25,7 @@ public class LoginFilter implements Filter {
         if (!isFilterList(requestURI)) {
             HttpSession session = httpRequest.getSession(false);
             if (session == null || session.getAttribute("sessionKey") == null) {
-                throw new RuntimeException("로그인 해주세요");
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 해주세요");
             }
         }
 
