@@ -24,7 +24,7 @@ public class FriendController {
      * @return
      */
     @PostMapping
-    public String friendRequest(@PathVariable("userId") Long loginUserId, @RequestBody FriendRequestDto dto) throws AuthenticationException {
+    public String friendRequest(@RequestBody FriendRequestDto dto) throws AuthenticationException {
         return friendService.friendRequest(dto.getEmail());
     }
 

@@ -32,6 +32,10 @@ public class FriendService {
         User sender = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
         User receiver = userRepository.findByEmailOrElseThrow(email);
 
+        if (sender == receiver) {
+            return "자기 자신에게 친구 요청을 보낼 수 없습니다.";
+        }
+
         if (isAlreadyFriend(sender, receiver)) {
             return findFriendStatus(sender, receiver);
         } else if (isAlreadyFriend(receiver, sender)) {
