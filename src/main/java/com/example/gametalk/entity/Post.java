@@ -5,6 +5,9 @@ import com.example.gametalk.enums.Genre;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Entity
 @Table(name = "post")
@@ -27,6 +30,9 @@ public class Post extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "post")
+    private List<LikePost> likes = new ArrayList<>();
 
     public Post() {
 
