@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class SessionUtils {
     private final HttpSession session;
 
+    // 이메일 가져오기
     public String getLoginUserEmail() {
         String email = (String) session.getAttribute("sessionKey");
         if (email == null) {

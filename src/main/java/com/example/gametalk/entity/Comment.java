@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 @Getter
@@ -35,9 +36,13 @@ public class Comment extends BaseEntity {
 
     }
 
-    public Comment(User user, Post post, String comment) {
-        this.user = user;
+    public Comment(User findUser, Post post, @NotBlank String comment) {
+        this.user = findUser;
         this.post = post;
+        this.comment = comment;
+    }
+
+    public void setComment(@NotBlank String comment) {
         this.comment = comment;
     }
 }

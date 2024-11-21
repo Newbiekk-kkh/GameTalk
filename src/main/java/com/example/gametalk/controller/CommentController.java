@@ -5,6 +5,7 @@ import com.example.gametalk.dto.comment.CommentResponseDto;
 import com.example.gametalk.entity.Comment;
 import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.service.CommentService;
+import com.example.gametalk.utils.SessionUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,44 +27,46 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+    private final SessionUtils sessionUtils;
 
-    // todo 댓글 작성
+    // 댓글 작성
     @PostMapping("/comments")
     public ResponseEntity<String> addComment(
-            @PathVariable String postId,
-            @Valid @RequestBody Comment comment
+            @PathVariable Long postId,
+            @Valid @RequestBody CommentRequestDto dto
     ) throws AuthenticationException {
-        CommentResponseDto commentResponseDto = CommentService.add(postId);
+        CommentResponseDto commentResponseDtoList = commentService.addComment(postId, dto);
         return new ResponseEntity<>("댓글이 작성되었습니다.", HttpStatus.OK);
     }
 
-    // todo 댓글 조회
+    // 댓글 조회
+    // todo 정렬, 페이지네이션 기능 추가 필요
     @GetMapping("/comments")
-    public ResponseEntity<List<CommentResponseDto>> getComments(
-            @PathVariable String postId
+    public ResponseEntity<List<CommentResponseDto>> findAllComments(
+            @PathVariable Long postId
     ) throws AuthenticationException {
-        List<CommentResponseDto> commentResponseDtoList = CommentService.findAll(postId);
+        List<CommentResponseDto> commentResponseDtoList = commentService.findAllComments(postId);
         return new ResponseEntity<>(commentResponseDtoList, HttpStatus.OK);
     }
     
-    // todo 댓글 수정
+    // 댓글 수정
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<CommentResponseDto> updateComment(
-            @PathVariable String postId,
-            @PathVariable String commentId,
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
             @Valid @RequestBody CommentRequestDto dto
     ) throws AuthenticationException {
-        CommentResponseDto commentResponseDto = CommentService.update(postId, commentId, dto.getComment());
+        CommentResponseDto commentResponseDto = commentService.updateComment(postId, commentId, dto);
         return new ResponseEntity<>(commentResponseDto, HttpStatus.OK);
     }
     
-    // todo 댓글 삭제
+    // 댓글 삭제
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<String> deleteComment(
-            @PathVariable String postId,
-            @PathVariable String commentId
+            @PathVariable Long postId,
+            @PathVariable Long commentId
     ) throws AuthenticationException {
-        commentService.delete(postId);
+        commentService.deleteComment(postId, commentId);
         return new ResponseEntity<>("댓글이 삭제되었습니다.", HttpStatus.OK);
     }
 }

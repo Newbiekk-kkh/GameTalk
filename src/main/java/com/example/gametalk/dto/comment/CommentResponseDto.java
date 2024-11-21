@@ -15,6 +15,7 @@ public class CommentResponseDto {
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
 
+
     public static CommentResponseDto toDto(Comment comment) {
         return new CommentResponseDto(
                 comment.getUser().getUsername(),
