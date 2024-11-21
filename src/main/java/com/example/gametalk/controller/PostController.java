@@ -3,6 +3,7 @@ package com.example.gametalk.controller;
 import com.example.gametalk.dto.posts.PostCreateResponseDto;
 import com.example.gametalk.dto.posts.PostRequestDto;
 import com.example.gametalk.dto.posts.PostResponseDto;
+import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,7 +24,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<PostCreateResponseDto> createPost(@RequestBody PostRequestDto requestDto) {
+    public ResponseEntity<PostCreateResponseDto> createPost(@RequestBody PostRequestDto requestDto) throws AuthenticationException {
 
         PostCreateResponseDto postCreateResponseDto =
             postService.createPost(
@@ -33,6 +34,7 @@ public class PostController {
             );
 
         return  new ResponseEntity<>(postCreateResponseDto, HttpStatus.CREATED);
+
     }
 
     // 정렬, 페이지네이션

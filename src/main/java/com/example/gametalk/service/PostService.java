@@ -5,6 +5,7 @@ import com.example.gametalk.dto.posts.PostResponseDto;
 import com.example.gametalk.entity.Post;
 import com.example.gametalk.entity.User;
 import com.example.gametalk.enums.Genre;
+import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.repository.PostRepository;
 import com.example.gametalk.repository.UserRepository;
 import com.example.gametalk.utils.SessionUtils;
@@ -26,15 +27,16 @@ public class PostService {
     private final PostRepository postRepository;
     private final SessionUtils sessionUtils;
 
-    public PostCreateResponseDto createPost(String title, Genre genre, String content) {
-
+  
+    public PostCreateResponseDto createPost(String title, Genre genre, String content) throws AuthenticationException {
         User findUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
         Post post = new Post(title, genre, content);
         post.setUser(findUser);
         postRepository.save(post);
 
-        return new PostCreateResponseDto(post.getTitle(),post.getGenre(), post.getContent(), post.getCreatedAt(), post.getModifiedAt());
+        return new PostCreateResponseDto(post.getTitle(), post.getGenre(), post.getContent(), post.getCreatedAt(), post.getModifiedAt());
     }
+
 
     // 페이징 처리
     public Page<PostResponseDto> findAll(Pageable pageable) {
@@ -65,7 +67,7 @@ public class PostService {
                 findPost.getContent(),
                 findPost.getCreatedAt(),
                 findPost.getModifiedAt()
-                );
+        );
     }
 
     public PostResponseDto update(Long id, String title, Genre genre, String content) {

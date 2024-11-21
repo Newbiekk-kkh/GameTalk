@@ -29,6 +29,7 @@ public class FriendStatusDto {
         );
     }
 
+
 //    public static FriendStatusDto receiverToDto(Friend friend) {
 //        return new FriendStatusDto(
 //                friend.getSender().getUsername(),
@@ -42,4 +43,5 @@ public class FriendStatusDto {
 //                friend.getReceiver().getEmail()
 //        );
 //    }
+
 }

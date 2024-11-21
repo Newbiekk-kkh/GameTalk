@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public class PostResponseDto {
+
     private final Long id;
     private final String username;
     private final String title;
@@ -15,6 +16,7 @@ public class PostResponseDto {
     private final String content;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
+
 
     public PostResponseDto(Long id, String username, String title, Genre genre, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.id = id;

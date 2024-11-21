@@ -1,6 +1,6 @@
 package com.example.gametalk.entity;
 
-import com.example.gametalk.enums.FriendStatus;
+import com.example.gametalk.entity.base.BaseEntity;
 import com.example.gametalk.enums.Genre;
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -3,6 +3,7 @@ package com.example.gametalk.controller;
 import com.example.gametalk.dto.friends.FriendRequestDto;
 import com.example.gametalk.dto.friends.FriendStatusDto;
 import com.example.gametalk.dto.friends.UpdateFriendStatusRequestDto;
+import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.service.FriendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class FriendController {
      * @return
      */
     @PostMapping
-    public String friendRequest(@RequestBody FriendRequestDto dto) {
+    public String friendRequest(@PathVariable("userId") Long loginUserId, @RequestBody FriendRequestDto dto) throws AuthenticationException {
         return friendService.friendRequest(dto.getEmail());
     }
 
