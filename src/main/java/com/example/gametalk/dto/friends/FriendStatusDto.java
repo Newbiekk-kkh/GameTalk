@@ -28,4 +28,18 @@ public class FriendStatusDto {
                 friend.getReceiver().getEmail()
         );
     }
+
+//    public static FriendStatusDto receiverToDto(Friend friend) {
+//        return new FriendStatusDto(
+//                friend.getSender().getUsername(),
+//                friend.getSender().getEmail()
+//        );
+//    }
+//
+//    public static FriendStatusDto senderToDto(Friend friend) {
+//        return new FriendStatusDto(
+//                friend.getReceiver().getUsername(),
+//                friend.getReceiver().getEmail()
+//        );
+//    }
 }

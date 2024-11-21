@@ -34,7 +34,7 @@ public class Friend {
         this.receiver = receiver;
     }
 
-    public void updateFriendStatus(FriendStatus status) {
+    public void updateFriend(FriendStatus status) {
         this.status = status;
     }
 }

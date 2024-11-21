@@ -37,11 +37,17 @@ public class FriendService {
         User sender = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
         User receiver = userRepository.findByEmailOrElseThrow(email);
 
-        Friend friend = new Friend(PENDING, sender, receiver);
-
-        friendRepository.save(friend);
-        return "친구 요청 완료";
+        if (isAlreadyFriend(sender, receiver)) {
+            return findFriendStatus(sender, receiver);
+        } else if (isAlreadyFriend(receiver, sender)) {
+            return findFriendStatus(receiver, sender);
+        } else {
+            Friend friend = new Friend(PENDING, sender, receiver);
+            friendRepository.save(friend);
+            return "친구 요청 완료";
+        }
     }
+
 
     public List<FriendStatusDto> viewFriendList() {
         User loginUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
@@ -61,28 +67,40 @@ public class FriendService {
 
     public List<FriendStatusDto> viewFriendRequestList() {
         User loginUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
-        System.out.println("Current user email: " + sessionUtils.getLoginUserEmail());
 
         return friendRepository
                 .findByReceiverAndStatus(loginUser, FriendStatus.PENDING)
                 .stream()
                 .map(FriendStatusDto::toDto)
                 .toList();
-
     }
 
     @Transactional
-    public String switchFriendStatus(FriendStatus status, String email) {
+    public String updateFriendStatus(FriendStatus status, String email) {
         User loginUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
         User sender = userRepository.findByEmailOrElseThrow(email);
         Friend pendingFriendRequest = friendRepository.findBySenderAndReceiverAndStatus(sender, loginUser, FriendStatus.valueOf("PENDING"));
 
-        pendingFriendRequest.updateFriendStatus(status);
+        pendingFriendRequest.updateFriend(status);
 
-        if (status == DENIED) {
-            return "친구요청이 거절되었습니다.";
-        } else {
-            return "친구요청이 승낙되었습니다.";
-        }
+        return switch (status) {
+            case PENDING -> "친구 요청이 보류 되었습니다.";
+            case DENIED -> "친구요청이 거절되었습니다.";
+            case ACCEPTED -> "친구요청이 승인되었습니다.";
+        };
+    }
+
+    public boolean isAlreadyFriend(User user1, User user2) {
+        return friendRepository.findByReceiverAndSender(user1, user2) != null;
+    }
+
+    public String findFriendStatus(User user1, User user2) {
+        Friend friend = friendRepository.findByReceiverAndSender(user1, user2);
+
+        return switch (friend.getStatus()) {
+            case PENDING -> "이미 보낸 요청입니다.";
+            case DENIED -> "이미 거절된 요청입니다.";
+            case ACCEPTED -> "이미 친구입니다.";
+        };
     }
 }

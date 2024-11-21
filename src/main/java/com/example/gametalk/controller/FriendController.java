@@ -17,6 +17,11 @@ import java.util.List;
 public class FriendController {
     private final FriendService friendService;
 
+    /**
+     *
+     * @param dto
+     * @return
+     */
     @PostMapping
     public String friendRequest(@RequestBody FriendRequestDto dto) {
         return friendService.friendRequest(dto.getEmail());
@@ -35,8 +40,8 @@ public class FriendController {
     }
 
     @PatchMapping
-    public String switchFriendStatus(@RequestBody UpdateFriendStatusRequestDto dto) {
+    public String updateFriendStatus(@RequestBody UpdateFriendStatusRequestDto dto) {
 
-        return friendService.switchFriendStatus(dto.getStatus(), dto.getEmail());
+        return friendService.updateFriendStatus(dto.getStatus(), dto.getEmail());
     }
 }
