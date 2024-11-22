@@ -12,6 +12,8 @@ import com.example.gametalk.repository.PostRepository;
 import com.example.gametalk.repository.UserRepository;
 import com.example.gametalk.utils.SessionUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,12 +37,11 @@ public class CommentService {
     }
 
     // 댓글 조회
-    public List<CommentResponseDto> findAllComments(Long postId) throws AuthenticationException {
+    // 페이지네이션
+    public Page<CommentResponseDto> findAllComments(Long postId, Pageable pageable) throws AuthenticationException {
         Post post = postRepository.findByIdOrElseThrow(postId);
-        return commentRepository.findByPostId(postId)
-                .stream()
-                .map(CommentResponseDto::toDto)
-                .toList();
+        return commentRepository.findByPostId(postId, pageable)
+                .map(CommentResponseDto::toDto);
     }
 
     // 댓글 수정
