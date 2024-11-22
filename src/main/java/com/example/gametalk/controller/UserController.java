@@ -37,7 +37,7 @@ public class UserController {
     }
 
     // 프로필 수정 기능
-    @PatchMapping("/users/{id}")
+    @PutMapping("/users/{id}")
     public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long id,
             @Valid
