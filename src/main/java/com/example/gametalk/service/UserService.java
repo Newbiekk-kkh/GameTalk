@@ -26,6 +26,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final SessionUtils sessionUtils;
 
+
     @Transactional
     public UserResponseDto signUp(String email, String password, String name) throws ValidationException {
 
@@ -85,6 +86,7 @@ public class UserService {
     }
 
     // 프로필 수정 기능
+    @Transactional
     public UserResponseDto updateUser(Long userId, String name, String email, String password, String newPassword) throws AuthenticationException, ValidationException {
         //권환 확인
         User loginUser = userRepository.findByEmailOrElseThrow(sessionUtils.checkAuthorization(findUserById(userId).getEmail()));
@@ -105,7 +107,7 @@ public class UserService {
 
         // 새로운 비밀번호 저장
         String encodedPassword = passwordEncoder.encode(newPassword);
-        loginUser.patchUserInfo(name, email, encodedPassword);
+        loginUser.updateUserInfo(name, email, encodedPassword);
 
         userRepository.save(loginUser);
 
