@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/posts/{postId}/likes")
-public class LikeController {
+public class PostLikeController {
     private final LikeService likeService;
 
     @PostMapping
@@ -25,8 +25,8 @@ public class LikeController {
     }
 
     @GetMapping
-    public ResponseEntity<LikeResponseDto> viewNumberOfLikes (@PathVariable Long postId) {
-        LikeResponseDto likeResponseDto = likeService.viewNumberOfLikes(postId);
+    public ResponseEntity<LikeResponseDto> viewNumberOfPostLikes (@PathVariable Long postId) {
+        LikeResponseDto likeResponseDto = likeService.viewNumberOfPostLikes(postId);
         return new ResponseEntity<> (likeResponseDto ,HttpStatus.OK);
     }
 }

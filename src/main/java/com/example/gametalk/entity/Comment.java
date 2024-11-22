@@ -1,16 +1,12 @@
 package com.example.gametalk.entity;
 
 import com.example.gametalk.entity.base.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -28,6 +24,9 @@ public class Comment extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
+
+    @OneToMany(mappedBy = "comment")
+    private List<CommentLike> likes = new ArrayList<>();
 
     @Column(nullable = false)
     private String comment;
