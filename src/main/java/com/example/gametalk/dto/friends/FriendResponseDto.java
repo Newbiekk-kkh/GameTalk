@@ -6,7 +6,6 @@ import lombok.Getter;
 @Getter
 public class FriendResponseDto {
     private final String username;
-
     private final String email;
 
     public FriendResponseDto(String username, String email) {
