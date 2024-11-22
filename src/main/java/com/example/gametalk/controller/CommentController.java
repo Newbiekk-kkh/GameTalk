@@ -23,15 +23,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/posts/{postId}")
 public class CommentController {
 
     private final CommentService commentService;
-    private final SessionUtils sessionUtils;
 
     // 댓글 작성
     @PostMapping("/comments")
@@ -53,7 +50,7 @@ public class CommentController {
     ) throws AuthenticationException {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<CommentResponseDto> commentResponseDtoPage = commentService.findAllComments(postId, pageable);
-        return ResponseEntity.ok(commentResponseDtoPage);
+        return new ResponseEntity<>(commentResponseDtoPage, HttpStatus.OK);
     }
     
     // 댓글 수정
