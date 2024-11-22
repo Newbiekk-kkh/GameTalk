@@ -11,12 +11,26 @@ import org.springframework.web.server.ResponseStatusException;
 public class SessionUtils {
     private final HttpSession session;
 
+
     // 이메일 가져오기
     public String getLoginUserEmail() {
-        String email = (String) session.getAttribute("sessionKey");
+        String email = (String)session.getAttribute("sessionKey");
+
         if (email == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
         return email;
+    }
+
+    public String checkAuthorization(String email) {
+        String loginEmail = getLoginUserEmail();
+        if (!email.equals(loginEmail)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "권한이 없습니다.");
+        }
+        return email;
+    }
+
+    public void reloadSession(String email) {
+        session.setAttribute("sessionKey", email);
     }
 }
