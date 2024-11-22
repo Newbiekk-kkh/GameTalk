@@ -17,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.gametalk.enums.FriendStatus.PENDING;
 
@@ -30,7 +29,6 @@ public class FriendService {
     private final UserRepository userRepository;
     private final SessionUtils sessionUtils;
 
-    // 친구 요청 로직
     @Transactional
     public String friendRequest(String email) throws AuthenticationException {
         User sender = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
@@ -53,7 +51,7 @@ public class FriendService {
         }
     }
 
-    // 친구 목록 보기 로직
+
     public List<FriendStatusDto> viewFriendList() throws AuthenticationException {
         User loginUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
 
@@ -70,7 +68,6 @@ public class FriendService {
                 .toList();
     }
 
-    // 친구 요청 목록 보기 로직
     public List<FriendStatusDto> viewFriendRequestList() throws AuthenticationException{
         User loginUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
         return friendRepository
@@ -80,12 +77,11 @@ public class FriendService {
                 .toList();
     }
 
-    // 친구 요청 상태 업데이트 로직
     @Transactional
     public String updateFriendStatus(FriendStatus status, String email) throws AuthenticationException {
         User loginUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
         User sender = userRepository.findByEmailOrElseThrow(email);
-        Friend pendingFriendRequest = friendRepository.findBySenderAndReceiverAndStatusOrElseThrow(sender, loginUser, FriendStatus.valueOf("PENDING"));
+        Friend pendingFriendRequest = friendRepository.findBySenderAndReceiverAndStatus(sender, loginUser, FriendStatus.valueOf("PENDING"));
 
         pendingFriendRequest.updateFriend(status);
 
@@ -96,12 +92,10 @@ public class FriendService {
         };
     }
 
-    // user1과 user2 가 이미 친구 상태인지 확인하기
     public boolean isAlreadyFriend(User user1, User user2) {
         return friendRepository.findByReceiverAndSender(user1, user2) != null;
     }
 
-    // user1과 user2 의 친구 상태 확인하기
     public void findFriendStatus(User user1, User user2) {
         Friend friend = friendRepository.findByReceiverAndSender(user1, user2);
 
