@@ -30,14 +30,25 @@ public class UserController {
     private final UserService userService;
 
     // 프로필 조회 기능
+    /**
+     * @param id  유저 아이디
+     * @return userProfileResponseDto (HttpStatus.OK) / 로그인한 유저와 조회유저가 다른 경우 예외 발생
+     */
     @GetMapping("/users/{id}")
-    public ResponseEntity<UserResponseDto> findUserById(@PathVariable Long id, HttpServletRequest request) throws AuthenticationException {
-        UserResponseDto userProfileResponseDto = userService.findUserById(id);
-        return new ResponseEntity<>(userProfileResponseDto, HttpStatus.OK);
+    public ResponseEntity<UserResponseDto> findUserById(
+            @PathVariable Long id,
+            HttpServletRequest request) throws AuthenticationException {
+        UserResponseDto userResponseDto = userService.findUserById(id);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
     // 프로필 수정 기능
-    @PatchMapping("/users/{id}")
+    /**
+     * @param id  유저 아이디
+     * @param dto  유저 요청 dto
+     * @return userResponseDto (HttpStatus.OK) / 로그인한 유저와 조회유저가 다른 경우 입력값이 없는 경우 예외 발생
+     */
+    @PutMapping("/users/{id}")
     public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long id,
             @Valid
