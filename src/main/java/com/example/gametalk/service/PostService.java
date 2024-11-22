@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -26,7 +27,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final SessionUtils sessionUtils;
 
-  
+
     public PostCreateResponseDto createPost(String title, Genre genre, String content) throws AuthenticationException {
         User findUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
         Post post = new Post(title, genre, content);
@@ -36,12 +37,26 @@ public class PostService {
         return new PostCreateResponseDto(post.getTitle(), post.getGenre(), post.getContent(), post.getCreatedAt(), post.getModifiedAt());
     }
 
+    public Page<PostResponseDto> findAll(Pageable pageable, String startDate, String endDate) {
+        LocalDateTime start = null;
+        LocalDateTime end = null;
 
-    // 페이징 처리
-    public Page<PostResponseDto> findAll(Pageable pageable) {
-        return postRepository.findAll(pageable)
-                .map(PostResponseDto::toDto);
+        if (startDate != null) {
+            start = LocalDateTime.parse(startDate + "T00:00:00");
+        }
+        if (endDate != null) {
+            end = LocalDateTime.parse(endDate + "T23:59:59");
+        }
+
+        if (start != null && end != null) {
+            return postRepository.findAllByModifiedAtBetween(start, end, pageable)
+                    .map(PostResponseDto::toDto);
+        } else {
+            return postRepository.findAll(pageable)
+                    .map(PostResponseDto::toDto);
+        }
     }
+
 
     public void delete(Long id) {
         Post findPost = postRepository.findByIdOrElseThrow(id);
@@ -56,7 +71,6 @@ public class PostService {
     public PostResponseDto findById(Long id) {
         Optional<Post> optionalPost = postRepository.findById(id);
 
-        // NPE 방지
         if (optionalPost.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post가 존재하지 않습니다.");
         }
