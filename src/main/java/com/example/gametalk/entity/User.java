@@ -45,7 +45,7 @@ public class User extends BaseEntity {
         this.isActivated = activateStatus;
     }
 
-    public void patchUserInfo(String name, String email, String password) {
+    public void updateUserInfo(String name, String email, String password) {
         this.username = name;
         this.email = email;
         this.password = password;
