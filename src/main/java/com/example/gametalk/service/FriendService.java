@@ -11,7 +11,9 @@ import com.example.gametalk.utils.SessionUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +34,16 @@ public class FriendService {
         User sender = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
         User receiver = userRepository.findByEmailOrElseThrow(email);
 
+        if (sender == receiver) {
+            throw new ResponseStatusException (HttpStatus.BAD_REQUEST, "자기 자신에게 친구 요청을 보낼 수 없습니다.");
+        }
+
         if (isAlreadyFriend(sender, receiver)) {
-            return findFriendStatus(sender, receiver);
+            findFriendStatus(sender, receiver);
+            return "친구 요청 실패";
         } else if (isAlreadyFriend(receiver, sender)) {
-            return findFriendStatus(receiver, sender);
+            findFriendStatus(receiver, sender);
+            return "친구 요청 실패";
         } else {
             Friend friend = new Friend(PENDING, sender, receiver);
             friendRepository.save(friend);
@@ -89,13 +97,13 @@ public class FriendService {
         return friendRepository.findByReceiverAndSender(user1, user2) != null;
     }
 
-    public String findFriendStatus(User user1, User user2) {
+    public void findFriendStatus(User user1, User user2) {
         Friend friend = friendRepository.findByReceiverAndSender(user1, user2);
 
-        return switch (friend.getStatus()) {
-            case PENDING -> "이미 보낸 요청입니다.";
-            case DENIED -> "이미 거절된 요청입니다.";
-            case ACCEPTED -> "이미 친구입니다.";
+        switch (friend.getStatus()) {
+            case PENDING -> throw new ResponseStatusException (HttpStatus.BAD_REQUEST, "이미 보낸 친구 요청입니다.");
+            case DENIED -> throw new ResponseStatusException (HttpStatus.BAD_REQUEST, "이미 거절 당한 친구요청입니다.");
+            case ACCEPTED -> throw new ResponseStatusException (HttpStatus.BAD_REQUEST, "이미 친구 상태입니다.");
         };
     }
 }
