@@ -55,7 +55,6 @@ public class FriendService {
     public List<FriendStatusDto> viewFriendList() throws AuthenticationException {
         User loginUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
 
-
         List<Friend> friendsAsSender = friendRepository.findBySenderAndStatus(loginUser, FriendStatus.valueOf("ACCEPTED"));
         List<Friend> friendsAsReceiver = friendRepository.findByReceiverAndStatus(loginUser, FriendStatus.valueOf("ACCEPTED"));
 

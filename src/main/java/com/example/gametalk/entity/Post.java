@@ -32,7 +32,7 @@ public class Post extends BaseEntity {
     private User user;
 
     @OneToMany(mappedBy = "post")
-    private List<LikePost> likes = new ArrayList<>();
+    private List<PostLike> likes = new ArrayList<>();
 
     public Post() {
 

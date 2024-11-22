@@ -7,8 +7,8 @@ import lombok.Setter;
 
 @Getter
 @Entity
-@Table(name = "like_post")
-public class LikePost extends BaseEntity {
+@Table(name = "post_like")
+public class PostLike extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
