@@ -55,10 +55,15 @@ public class UserService {
     }
 
     public String authenticate(String email, String password) throws AuthenticationException {
+
         //이메일 체크
         User findUser = userRepository.findByEmail(email).orElseThrow(() ->
                 new AuthenticationException(AuthenticationErrorCode.EMAIL_INCORRECT)
         );
+
+        if (!findUser.isActivated()) {
+            throw new AuthenticationException(AuthenticationErrorCode.USER_DEACTIVATED);
+        }
 
         checkPassword(password, findUser);
 
@@ -67,8 +72,13 @@ public class UserService {
 
     @Transactional
     public String deactivateAccount(Long id, String password) throws AuthenticationException {
+        User findUser = userRepository.findById(id).orElseThrow(() -> new AuthenticationException(AuthenticationErrorCode.USER_NOT_FOUND));
 
-        User findUser = userRepository.findById(id).orElseThrow(() -> new AuthenticationException(AuthenticationErrorCode.USER_DEACTIVATED));
+        if (!findUser.isActivated()) {
+            throw new AuthenticationException(AuthenticationErrorCode.USER_DEACTIVATED);
+        }
+
+        sessionUtils.checkAuthorization(findUser);
 
         checkPassword(password, findUser);
 

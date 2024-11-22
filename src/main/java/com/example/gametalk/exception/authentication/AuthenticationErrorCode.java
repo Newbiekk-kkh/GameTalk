@@ -13,7 +13,8 @@ public enum AuthenticationErrorCode {
     USER_DEACTIVATED(HttpStatus.NOT_FOUND, "이미 회원탈퇴 처리 되었습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 댓글입니다."),
-    COMMENT_FORBIDDEN(HttpStatus.FORBIDDEN, "댓글에 대한 접근 권한이 없습니다.");
+    COMMENT_FORBIDDEN(HttpStatus.FORBIDDEN, "댓글에 대한 접근 권한이 없습니다."),
+    POST_FORBIDDEN(HttpStatus.FORBIDDEN, "게시글에 대한 접근 권한이 없습니다.");
 
 
     private final HttpStatus httpStatus;

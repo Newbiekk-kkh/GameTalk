@@ -5,6 +5,7 @@ import com.example.gametalk.dto.comment.CommentResponseDto;
 import com.example.gametalk.entity.Comment;
 import com.example.gametalk.entity.Post;
 import com.example.gametalk.entity.User;
+import com.example.gametalk.exception.authentication.AuthenticationErrorCode;
 import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.repository.CommentRepository;
 import com.example.gametalk.repository.PostRepository;
@@ -27,7 +28,12 @@ public class CommentService {
     // 댓글 작성
     public CommentResponseDto addComment(Long postId, CommentRequestDto dto) throws AuthenticationException {
         Post post = postRepository.findByIdOrElseThrow(postId);
+
         User findUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
+        if (!findUser.isActivated()) {
+            throw new AuthenticationException(AuthenticationErrorCode.COMMENT_FORBIDDEN);
+        }
+
         Comment comment = new Comment(findUser, post, dto.comment());
         Comment saveComment = commentRepository.save(comment);
         return CommentResponseDto.toDto(saveComment);
@@ -43,8 +49,13 @@ public class CommentService {
 
     // 댓글 수정
     public CommentResponseDto updateComment(Long postId, Long commentId, CommentRequestDto dto) throws AuthenticationException {
-        Post post = postRepository.findByIdOrElseThrow(postId);
+        //Post post = postRepository.findByIdOrElseThrow(postId);
         User findUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
+
+        if (!findUser.isActivated()) {
+            throw new AuthenticationException(AuthenticationErrorCode.COMMENT_FORBIDDEN);
+        }
+
         Comment comment = commentRepository.findCommentIdOrElseThrow(commentId);
         //권한 확인
         String ownerEmail = comment.getUser().getEmail();
@@ -58,8 +69,15 @@ public class CommentService {
 
     // 댓글 삭제
     public void deleteComment(Long postId, Long commentId) throws AuthenticationException {
-        Post post = postRepository.findByIdOrElseThrow(postId);
+        //Post post = postRepository.findByIdOrElseThrow(postId);
         Comment comment = commentRepository.findCommentIdOrElseThrow(commentId);
+
+        User findUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
+
+        if (!findUser.isActivated()) {
+            throw new AuthenticationException(AuthenticationErrorCode.COMMENT_FORBIDDEN);
+        }
+
         //권한 확인
         String ownerEmail = comment.getUser().getEmail();
         sessionUtils.checkAuthorization(ownerEmail);

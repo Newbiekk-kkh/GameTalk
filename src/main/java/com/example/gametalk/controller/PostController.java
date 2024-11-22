@@ -105,7 +105,7 @@ public class PostController {
      * @return 삭제 성공 시 HttpStatus.OK
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) throws AuthenticationException {
         postService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

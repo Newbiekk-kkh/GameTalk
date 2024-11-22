@@ -91,7 +91,7 @@ public class UserController {
      * @apiNote 로그인
      */
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserRequestDto dto, HttpServletRequest request) throws AuthenticationException {
+    public ResponseEntity<String> login(@RequestBody UserRequestDto dto, HttpServletRequest request) throws AuthenticationException, ValidationException {
         String successMessage = userService.authenticate(dto.getEmail(), dto.getPassword());
         HttpSession session = request.getSession(true);
         session.setAttribute("sessionKey", dto.getEmail());

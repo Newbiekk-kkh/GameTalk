@@ -5,6 +5,7 @@ import com.example.gametalk.dto.posts.PostResponseDto;
 import com.example.gametalk.entity.Post;
 import com.example.gametalk.entity.User;
 import com.example.gametalk.enums.Genre;
+import com.example.gametalk.exception.authentication.AuthenticationErrorCode;
 import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.repository.PostRepository;
 import com.example.gametalk.repository.UserRepository;
@@ -37,6 +38,9 @@ public class PostService {
      */
     public PostCreateResponseDto createPost(String title, Genre genre, String content) throws AuthenticationException {
         User findUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
+        if (!findUser.isActivated()) {
+            throw new AuthenticationException(AuthenticationErrorCode.POST_FORBIDDEN);
+        }
         Post post = new Post(title, genre, content);
         post.setUser(findUser);
         postRepository.save(post);
@@ -75,8 +79,12 @@ public class PostService {
      * 게시글 삭제
      * @param id 삭제할 게시글의 ID
      */
-    public void delete(Long id) {
+    public void delete(Long id) throws AuthenticationException{
         Post findPost = postRepository.findByIdOrElseThrow(id);
+
+        if (!findPost.getUser().isActivated()) {
+            throw new AuthenticationException(AuthenticationErrorCode.POST_FORBIDDEN);
+        }
 
         //권한 확인
         String userEmail = findPost.getUser().getEmail();
@@ -122,6 +130,10 @@ public class PostService {
      */
     public PostResponseDto update(Long id, String title, Genre genre, String content) throws AuthenticationException {
         Post findPost = postRepository.findByIdOrElseThrow(id);
+
+        if (!findPost.getUser().isActivated()) {
+            throw new AuthenticationException(AuthenticationErrorCode.POST_FORBIDDEN);
+        }
 
         //권한 확인
         String userEmail = findPost.getUser().getEmail();

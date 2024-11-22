@@ -50,7 +50,6 @@ public class CommentController {
      * @param postId  게시글 아이디
      * @param page 페이지 번호 (기본값-0)
      * @param size 페이지 크기 (기본값-10)
-     * @param Sort.By 정렬 기준(createdAt)
      * @return commentResponseDtoPage (HttpStatus.OK) / 포스트가 없거나 댓글이 없는 경우 예외 발생
      */
     @GetMapping("/comments")
