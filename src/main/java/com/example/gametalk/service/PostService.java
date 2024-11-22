@@ -3,11 +3,9 @@ package com.example.gametalk.service;
 import com.example.gametalk.dto.posts.PostCreateResponseDto;
 import com.example.gametalk.dto.posts.PostResponseDto;
 import com.example.gametalk.entity.Post;
-import com.example.gametalk.entity.PostLike;
 import com.example.gametalk.entity.User;
 import com.example.gametalk.enums.Genre;
 import com.example.gametalk.exception.authentication.AuthenticationException;
-import com.example.gametalk.repository.PostLikeRepository;
 import com.example.gametalk.repository.PostRepository;
 import com.example.gametalk.repository.UserRepository;
 import com.example.gametalk.utils.SessionUtils;
@@ -27,10 +25,16 @@ public class PostService {
 
     private final UserRepository userRepository;
     private final PostRepository postRepository;
-    private final PostLikeRepository postLikeRepository;
     private final SessionUtils sessionUtils;
 
-
+    /**
+     *
+     * @param title 제목
+     * @param genre 장르
+     * @param content 내용
+     * @return 생성된 게시글 정보
+     * @throws AuthenticationException 인증 실패 시 발생
+     */
     public PostCreateResponseDto createPost(String title, Genre genre, String content) throws AuthenticationException {
         User findUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
         Post post = new Post(title, genre, content);
@@ -40,6 +44,13 @@ public class PostService {
         return new PostCreateResponseDto(post.getTitle(), post.getGenre(), post.getContent(), post.getCreatedAt(), post.getModifiedAt());
     }
 
+    /**
+     * 게시글 목록 조회
+     * @param pageable 페이징 정보
+     * @param startDate 조회 시작 날짜
+     * @param endDate 조회 종료 날짜
+     * @return 페이징 처리된 게시글 목록
+     */
     public Page<PostResponseDto> findAll(Pageable pageable, String startDate, String endDate) {
         LocalDateTime start = null;
         LocalDateTime end = null;
@@ -60,6 +71,10 @@ public class PostService {
         }
     }
 
+    /**
+     * 게시글 삭제
+     * @param id 삭제할 게시글의 ID
+     */
     public void delete(Long id) {
         Post findPost = postRepository.findByIdOrElseThrow(id);
 
@@ -70,6 +85,11 @@ public class PostService {
         postRepository.delete(findPost);
     }
 
+    /**
+     * 특정 게시글 조회
+     * @param id 조회할 게시글의 ID
+     * @return 조회된 게시글 정보
+     */
     public PostResponseDto findById(Long id) {
         Optional<Post> optionalPost = postRepository.findById(id);
 
@@ -91,6 +111,15 @@ public class PostService {
         );
     }
 
+    /**
+     * 특정 게시글 수정
+     * @param id 수정할 게시글의 ID
+     * @param title 제목
+     * @param genre 장르
+     * @param content 내용
+     * @return 수정된 게시글의 정보
+     * @throws AuthenticationException 인증 실패 시 발생
+     */
     public PostResponseDto update(Long id, String title, Genre genre, String content) throws AuthenticationException {
         Post findPost = postRepository.findByIdOrElseThrow(id);
 

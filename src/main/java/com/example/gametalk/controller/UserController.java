@@ -30,14 +30,26 @@ public class UserController {
     private final UserService userService;
 
     // 프로필 조회 기능
+    /**
+     * @param id  유저 아이디
+     * @return userProfileResponseDto (HttpStatus.OK) / 로그인한 유저와 조회유저가 다른 경우 예외 발생
+     */
     @GetMapping("/users/{id}")
-    public ResponseEntity<UserResponseDto> findUserById(@PathVariable Long id, HttpServletRequest request) throws AuthenticationException {
-        UserResponseDto userProfileResponseDto = userService.findUserById(id);
-        return new ResponseEntity<>(userProfileResponseDto, HttpStatus.OK);
+    public ResponseEntity<UserResponseDto> findUserById(
+            @PathVariable Long id,
+            HttpServletRequest request) throws AuthenticationException {
+        UserResponseDto userResponseDto = userService.findUserById(id);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
     // 프로필 수정 기능
-    @PatchMapping("/users/{id}")
+    /**
+     * @param id  유저 아이디
+     * @param dto  유저 요청 dto
+     * @return userResponseDto (HttpStatus.OK) / 로그인한 유저와 조회유저가 다른 경우 입력값이 없는 경우 예외 발생
+     */
+
+    @PutMapping("/users/{id}")
     public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long id,
             @Valid
@@ -51,8 +63,7 @@ public class UserController {
      * @apiNote 회원가입
      * @param dto (이메일, 비밀번호, 이름)
      * @return UserResponseDto, HttpStatus.OK
-     * @throws ValidationException
-     * @apiNote 회원가입
+     * @throws ValidationException (이메일, 비밀번호, 이름 검증에 관련된 예외 처리)
      */
     @PostMapping("/signup")
     public ResponseEntity<UserResponseDto> signUp(@RequestBody @Valid UserRequestDto dto) throws ValidationException {
@@ -63,8 +74,8 @@ public class UserController {
     /**
      * @param id  (유저 아이디)
      * @param dto (비밀번호)
-     * @return "회원탈퇴 완료" 문자열 반환 (HttpStatus.OK) / 비밀번호가 일치하지 않거나 이미 탈퇴한 회원인 경우 예외 발생
-     * @throws AuthenticationException
+     * @return "회원탈퇴 완료" 문자열 반환 (HttpStatus.OK)
+     * @throws AuthenticationException (비밀번호가 일치하지 않거나 이미 탈퇴한 회원인 경우 예외 발생)
      */
     @PatchMapping("/users/{id}/deactive")
     public ResponseEntity<String> deactivateAccount(@PathVariable Long id, @RequestBody UserRequestDto dto) throws AuthenticationException {
@@ -73,10 +84,10 @@ public class UserController {
     }
 
     /**
-     * @param dto     (이메일, 패스워드)
+     * @param dto (이메일, 패스워드)
      * @param request (HttpSession.getSession)
-     * @return "로그인 완료" 문자열 반환 (HttpStatus.OK) / 이메일 또는 비밀번호가 일치하지 않을 시 예외 출력 (HttpStatus.BAD_REQUEST)
-     * @throws AuthenticationException
+     * @return "로그인 완료" 문자열 반환 (HttpStatus.OK)
+     * @throws AuthenticationException (이메일 또는 비밀번호가 일치하지 않을 시 예외 출력)
      * @apiNote 로그인
      */
     @PostMapping("/login")

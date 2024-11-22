@@ -4,7 +4,6 @@ import com.example.gametalk.dto.comment.CommentRequestDto;
 import com.example.gametalk.dto.comment.CommentResponseDto;
 import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.service.CommentService;
-import com.example.gametalk.utils.SessionUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,6 +30,11 @@ public class CommentController {
     private final CommentService commentService;
 
     // 댓글 작성
+    /**
+     * @param postId  게시글 아이디
+     * @param dto 댓글 요청 데이터
+     * @return "댓글이 작성되었습니다" (HttpStatus.CREATED) / 포스트가 없거나 빈값인 경우 예외 발생
+     */
     @PostMapping("/comments")
     public ResponseEntity<String> addComment(
             @PathVariable Long postId,
@@ -42,6 +46,13 @@ public class CommentController {
 
     // 댓글 조회
     // 페이지네이션
+    /**
+     * @param postId  게시글 아이디
+     * @param page 페이지 번호 (기본값-0)
+     * @param size 페이지 크기 (기본값-10)
+     * @param Sort.By 정렬 기준(createdAt)
+     * @return commentResponseDtoPage (HttpStatus.OK) / 포스트가 없거나 댓글이 없는 경우 예외 발생
+     */
     @GetMapping("/comments")
     public ResponseEntity<Page<CommentResponseDto>> findAllComments(
             @PathVariable Long postId,
@@ -54,6 +65,12 @@ public class CommentController {
     }
     
     // 댓글 수정
+    /**
+     * @param postId  게시글 아이디
+     * @param commentId 댓글 아이디
+     * @param dto 댓글 요청 데이터
+     * @return commentResponseDtoPage (HttpStatus.OK) / 작성자와 수정자가 다를 경우, 입력값이 없는 경우 예외 발생
+     */
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<CommentResponseDto> updateComment(
             @PathVariable Long postId,
@@ -65,6 +82,11 @@ public class CommentController {
     }
     
     // 댓글 삭제
+    /**
+     * @param postId  게시글 아이디
+     * @param commentId 댓글 아이디
+     * @return "댓글이 삭제되었습니다." (HttpStatus.OK) / 작성자와 수정자가 다를 경우, 입력값이 없는 경우 예외 발생
+     */
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<String> deleteComment(
             @PathVariable Long postId,
