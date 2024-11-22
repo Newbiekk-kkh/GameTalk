@@ -14,16 +14,19 @@ import org.springframework.web.bind.annotation.*;
 public class PostLikeController {
     private final LikeService likeService;
 
+    // 게시글 좋아요
     @PostMapping
     public String likePost(@PathVariable Long postId) throws AuthenticationException {
         return likeService.likePost(postId);
     }
 
+    // 게시글 좋아요 취소
     @DeleteMapping
     public String cancelLikedPost(@PathVariable Long postId) throws AuthenticationException {
         return likeService.cancelLikedPost(postId);
     }
 
+    // 게시글의 총 좋아요 갯수 보기
     @GetMapping
     public ResponseEntity<LikeResponseDto> viewNumberOfPostLikes (@PathVariable Long postId) {
         LikeResponseDto likeResponseDto = likeService.viewNumberOfPostLikes(postId);
