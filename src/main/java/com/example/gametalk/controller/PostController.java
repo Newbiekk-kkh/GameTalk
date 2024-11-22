@@ -14,8 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/posts")
 @RequiredArgsConstructor
@@ -27,35 +25,41 @@ public class PostController {
     public ResponseEntity<PostCreateResponseDto> createPost(@RequestBody PostRequestDto requestDto) throws AuthenticationException {
 
         PostCreateResponseDto postCreateResponseDto =
-            postService.createPost(
-                    requestDto.getTitle(),
-                    requestDto.getGenre(),
-                    requestDto.getContent()
-            );
+                postService.createPost(
+                        requestDto.getTitle(),
+                        requestDto.getGenre(),
+                        requestDto.getContent()
+                );
 
-        return  new ResponseEntity<>(postCreateResponseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(postCreateResponseDto, HttpStatus.CREATED);
 
     }
 
-    // 정렬, 페이지네이션
+    // 업그레이드 뉴스피드
     @GetMapping
     public ResponseEntity<Page<PostResponseDto>> findAll(
-            @RequestParam(defaultValue = "0") int page,      // 기본값: 첫 페이지 (0)
-            @RequestParam(defaultValue = "10") int size      // 기본값: 한 페이지에 10개
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate
     ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable;
 
-        Page<PostResponseDto> postResponseDtoPage = postService.findAll(pageable);
+        if ("modifiedAt".equals(sortBy)) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("modifiedAt")));
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt"))); // 기본값 생성일자
+        }
 
+        Page<PostResponseDto> postResponseDtoPage = postService.findAll(pageable, startDate, endDate);
         return ResponseEntity.ok(postResponseDtoPage);
     }
 
 
     @GetMapping("/{id}")
     public ResponseEntity<PostResponseDto> findById(@PathVariable Long id) {
-
         PostResponseDto postResponseDto = postService.findById(id);
-
         return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
     }
 
@@ -68,9 +72,7 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-
         postService.delete(id);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
