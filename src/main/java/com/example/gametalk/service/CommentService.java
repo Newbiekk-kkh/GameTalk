@@ -25,17 +25,16 @@ public class CommentService {
     private final PostRepository postRepository;
     private final SessionUtils sessionUtils;
 
-    // todo 댓글 작성
+    // 댓글 작성
     public CommentResponseDto addComment(Long postId, CommentRequestDto dto) throws AuthenticationException {
         Post post = postRepository.findByIdOrElseThrow(postId);
         User findUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
         Comment comment = new Comment(findUser, post, dto.comment());
         Comment saveComment = commentRepository.save(comment);
-
         return CommentResponseDto.toDto(saveComment);
     }
 
-    // todo 댓글 조회
+    // 댓글 조회
     public List<CommentResponseDto> findAllComments(Long postId) throws AuthenticationException {
         Post post = postRepository.findByIdOrElseThrow(postId);
         return commentRepository.findByPostId(postId)
@@ -44,26 +43,34 @@ public class CommentService {
                 .toList();
     }
 
-    // todo 댓글 수정
+    // 댓글 수정
     public CommentResponseDto updateComment(Long postId, Long commentId, CommentRequestDto dto) throws AuthenticationException {
         Post post = postRepository.findByIdOrElseThrow(postId);
         User findUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
         Comment comment = commentRepository.findCommentIdOrElseThrow(commentId);
-
         // 작성자 검증
+        // todo 변경된 인증/인가 기능과 통일 필요
+        if (!comment.getUser().getId().equals(findUser.getId())) {
+            throw new AuthenticationException(AuthenticationErrorCode.COMMENT_FORBIDDEN);
+        }
+        // 댓글 수정
+        comment.setComment(dto.comment());
+        // 댓글 저장
+        Comment updatedComment = commentRepository.save(comment);
+        return CommentResponseDto.toDto(updatedComment);
+    }
+
+    // 댓글 삭제
+    public void deleteComment(Long postId, Long commentId) throws AuthenticationException {
+        Post post = postRepository.findByIdOrElseThrow(postId);
+        User findUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
+        Comment comment = commentRepository.findCommentIdOrElseThrow(commentId);
+        // 작성자 검증
+        // todo 변경된 인증/인가 기능과 통일 필요
         if (!comment.getUser().getId().equals(findUser.getId())) {
             throw new AuthenticationException(AuthenticationErrorCode.COMMENT_FORBIDDEN);
         }
 
-        comment.setComment(dto.comment()); // 댓글 수정
-        Comment updatedComment = commentRepository.save(comment); // 댓글 저장
-        return CommentResponseDto.toDto(updatedComment);
-    }
-
-    // todo 댓글 삭제
-    public void deleteComment(Long postId, Long commentId) throws AuthenticationException {
-        Post post = postRepository.findByIdOrElseThrow(postId);
-        Comment comment = commentRepository.findCommentIdOrElseThrow(commentId);
         commentRepository.delete(comment);
     }
 }

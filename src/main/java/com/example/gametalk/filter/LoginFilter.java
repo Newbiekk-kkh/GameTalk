@@ -13,7 +13,7 @@ import java.io.IOException;
 public class LoginFilter implements Filter {
 
     //로그인이 필요 없는 도메인
-    private static final String[] FILTER_LIST = {"/", "/signup", "/login", "/posts", "/post/{id}"};
+    private static final String[] FILTER_LIST = {"/", "/signup", "/login", "/posts", "/post/{id}", "/post/{id}/comments"};
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
