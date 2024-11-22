@@ -35,6 +35,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-### properties 제외 ###
-src/main/resources/application.properties!/.gitignore
