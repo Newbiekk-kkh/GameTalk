@@ -135,5 +135,4 @@ public class LikeService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 URL 입니다.");
         }
     }
-
 }

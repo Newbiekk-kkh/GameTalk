@@ -3,9 +3,11 @@ package com.example.gametalk.service;
 import com.example.gametalk.dto.posts.PostCreateResponseDto;
 import com.example.gametalk.dto.posts.PostResponseDto;
 import com.example.gametalk.entity.Post;
+import com.example.gametalk.entity.PostLike;
 import com.example.gametalk.entity.User;
 import com.example.gametalk.enums.Genre;
 import com.example.gametalk.exception.authentication.AuthenticationException;
+import com.example.gametalk.repository.PostLikeRepository;
 import com.example.gametalk.repository.PostRepository;
 import com.example.gametalk.repository.UserRepository;
 import com.example.gametalk.utils.SessionUtils;
@@ -25,6 +27,7 @@ public class PostService {
 
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final PostLikeRepository postLikeRepository;
     private final SessionUtils sessionUtils;
 
 
@@ -57,7 +60,6 @@ public class PostService {
         }
     }
 
-
     public void delete(Long id) {
         Post findPost = postRepository.findByIdOrElseThrow(id);
 
@@ -83,6 +85,7 @@ public class PostService {
                 findPost.getTitle(),
                 findPost.getGenre(),
                 findPost.getContent(),
+                findPost.getLikes().size(),
                 findPost.getCreatedAt(),
                 findPost.getModifiedAt()
         );
@@ -104,6 +107,7 @@ public class PostService {
                 findPost.getTitle(),
                 findPost.getGenre(),
                 findPost.getContent(),
+                findPost.getLikes().size(),
                 findPost.getCreatedAt(),
                 findPost.getModifiedAt()
         );

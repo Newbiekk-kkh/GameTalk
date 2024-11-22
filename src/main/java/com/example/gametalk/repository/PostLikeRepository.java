@@ -18,4 +18,8 @@ public interface PostLikeRepository extends JpaRepository <PostLike, Long> {
     default PostLike findByUserAndPostOrElseThrow(User user, Post post) {
         return findByUserAndPost(user, post).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "좋아요를 누르지 않았습니다."));
     }
+
+    static Long countLikesByPostId(Long id) {
+        return null;
+    }
 }

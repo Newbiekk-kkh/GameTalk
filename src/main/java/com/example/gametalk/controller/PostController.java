@@ -48,8 +48,10 @@ public class PostController {
 
         if ("modifiedAt".equals(sortBy)) {
             pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("modifiedAt")));
+        } else if ("likes".equals(sortBy)) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("likes"))); // 기본값 생성일자
         } else {
-            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt"))); // 기본값 생성일자
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
         }
 
         Page<PostResponseDto> postResponseDtoPage = postService.findAll(pageable, startDate, endDate);
