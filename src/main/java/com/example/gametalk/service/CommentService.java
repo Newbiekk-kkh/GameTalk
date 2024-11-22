@@ -5,7 +5,6 @@ import com.example.gametalk.dto.comment.CommentResponseDto;
 import com.example.gametalk.entity.Comment;
 import com.example.gametalk.entity.Post;
 import com.example.gametalk.entity.User;
-import com.example.gametalk.exception.authentication.AuthenticationErrorCode;
 import com.example.gametalk.exception.authentication.AuthenticationException;
 import com.example.gametalk.repository.CommentRepository;
 import com.example.gametalk.repository.PostRepository;
@@ -15,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +35,7 @@ public class CommentService {
 
     // 댓글 조회
     // 페이지네이션
-    public Page<CommentResponseDto> findAllComments(Long postId, Pageable pageable) throws AuthenticationException {
+    public Page<CommentResponseDto> findAllComments(Long postId, Pageable pageable){
         Post post = postRepository.findByIdOrElseThrow(postId);
         return commentRepository.findByPostId(postId, pageable)
                 .map(CommentResponseDto::toDto);
@@ -49,11 +46,9 @@ public class CommentService {
         Post post = postRepository.findByIdOrElseThrow(postId);
         User findUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
         Comment comment = commentRepository.findCommentIdOrElseThrow(commentId);
-        // 작성자 검증
-        // todo 변경된 인증/인가 기능과 통일 필요
-        if (!comment.getUser().getId().equals(findUser.getId())) {
-            throw new AuthenticationException(AuthenticationErrorCode.COMMENT_FORBIDDEN);
-        }
+        //권한 확인
+        String ownerEmail = comment.getUser().getEmail();
+        sessionUtils.checkAuthorization(ownerEmail);
         // 댓글 수정
         comment.setComment(dto.comment());
         // 댓글 저장
@@ -64,14 +59,11 @@ public class CommentService {
     // 댓글 삭제
     public void deleteComment(Long postId, Long commentId) throws AuthenticationException {
         Post post = postRepository.findByIdOrElseThrow(postId);
-        User findUser = userRepository.findByEmailOrElseThrow(sessionUtils.getLoginUserEmail());
         Comment comment = commentRepository.findCommentIdOrElseThrow(commentId);
-        // 작성자 검증
-        // todo 변경된 인증/인가 기능과 통일 필요
-        if (!comment.getUser().getId().equals(findUser.getId())) {
-            throw new AuthenticationException(AuthenticationErrorCode.COMMENT_FORBIDDEN);
-        }
-
+        //권한 확인
+        String ownerEmail = comment.getUser().getEmail();
+        sessionUtils.checkAuthorization(ownerEmail);
+        // 댓글 삭제
         commentRepository.delete(comment);
     }
 }
